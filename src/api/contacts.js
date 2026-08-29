@@ -1,0 +1,13 @@
+const initialContacts = [
+  { id: 1, name: 'Ana García', phone: '315 555 0101', age: '25', city: 'Cali' },
+  { id: 2, name: 'Luis Pérez', phone: '312 555 0202', age: '30', city: 'Medellín' },
+  { id: 3, name: 'María López', phone: '300 555 0303', age: '28', city: 'Bogotá' },
+  { id: 4, name: 'Carlos Ruiz', phone: '311 555 0404', age: '35', city: 'Palmira' },
+];
+
+// simula la respuesta del servidor
+export function fetchContacts() {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(initialContacts), 2000);
+  });
+}
