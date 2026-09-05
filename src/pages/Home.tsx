@@ -1,102 +1,83 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import {
   IonContent,
   IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
-  IonFab,
-  IonFabButton,
-  IonIcon,
-  IonLoading,
-  IonAlert,
-  IonBadge,
-  IonText,
-  IonModal,
-  IonButton,
-  IonInput,
-  IonItem,
-  IonLabel,
   IonList,
-  IonButtons,
+  IonText,
+  IonIcon,
+  IonBadge,
+  IonAlert,
+  IonLoading,
 } from '@ionic/react';
-import { add, peopleOutline, closeOutline, saveOutline } from 'ionicons/icons';
-import ContactItem from '../components/ContactItem';
-import { Contact, initialContacts } from '../data/contacts';
+import { listOutline, checkmarkCircleOutline, timeOutline } from 'ionicons/icons';
+import TaskItem from '../components/TaskItem';
+import TaskForm from '../components/TaskForm';
+import { Task, initialTasks } from '../data/tasks';
 import './Home.css';
 
 const Home: React.FC = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [showAlert, setShowAlert] = useState(false);
-  const [contactToDelete, setContactToDelete] = useState<number | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  // Formulario
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
-  const [city, setCity] = useState('');
-
-  // Simular carga de datos (igual que en Challenge 01)
-  useEffect(() => {
+  // Simular carga inicial
+  useState(() => {
+    setLoading(true);
     const timer = setTimeout(() => {
-      setContacts(initialContacts);
       setLoading(false);
-    }, 1500);
+    }, 800);
     return () => clearTimeout(timer);
-  }, []);
+  });
 
-  const handleDelete = (id: number) => {
-    setContactToDelete(id);
+  const handleAddTask = (title: string, description: string) => {
+    const newTask: Task = {
+      id: Date.now(),
+      title,
+      description,
+      completed: false,
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+    setTasks((prev) => [newTask, ...prev]);
+  };
+
+  const handleToggleTask = (id: number) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setTaskToDelete(id);
     setShowAlert(true);
   };
 
   const confirmDelete = () => {
-    if (contactToDelete !== null) {
-      setContacts((prev) => prev.filter((c) => c.id !== contactToDelete));
-      setContactToDelete(null);
+    if (taskToDelete !== null) {
+      setTasks((prev) => prev.filter((task) => task.id !== taskToDelete));
+      setTaskToDelete(null);
     }
     setShowAlert(false);
   };
 
-  const openModal = () => {
-    setName('');
-    setPhone('');
-    setAge('');
-    setCity('');
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSave = () => {
-    if (!name.trim() || !phone.trim()) return;
-
-    const newContact: Contact = {
-      id: Date.now(),
-      name: name.trim(),
-      phone: phone.trim(),
-      age: age.trim(),
-      city: city.trim(),
-    };
-
-    setContacts((prev) => [...prev, newContact]);
-    closeModal();
-  };
+  const completedCount = tasks.filter((t) => t.completed).length;
+  const pendingCount = tasks.filter((t) => !t.completed).length;
 
   if (loading) {
     return (
       <IonPage>
         <IonHeader>
-          <IonToolbar color="danger">
-            <IonTitle>Mis Contactos</IonTitle>
+          <IonToolbar color="primary">
+            <IonTitle>Mi Gestor de Tareas</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonLoading isOpen={true} message="Cargando contactos..." />
+          <IonLoading isOpen={true} message="Cargando tus tareas..." />
         </IonContent>
       </IonPage>
     );
@@ -105,112 +86,62 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="danger">
-          <IonTitle>Mis Contactos</IonTitle>
-          <IonBadge slot="end" color="light" className="contact-badge">
-            {contacts.length}
-          </IonBadge>
+        <IonToolbar color="primary">
+          <IonTitle>Mi Gestor de Tareas</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        {contacts.length === 0 ? (
+        {/* Estadisticas */}
+        <div className="stats-container">
+          <div className="stat-box">
+            <IonIcon icon={listOutline} color="primary" />
+            <span className="stat-number">{tasks.length}</span>
+            <span className="stat-label">Total</span>
+          </div>
+          <div className="stat-box">
+            <IonIcon icon={timeOutline} color="warning" />
+            <span className="stat-number">{pendingCount}</span>
+            <span className="stat-label">Pendientes</span>
+          </div>
+          <div className="stat-box">
+            <IonIcon icon={checkmarkCircleOutline} color="success" />
+            <span className="stat-number">{completedCount}</span>
+            <span className="stat-label">Completadas</span>
+          </div>
+        </div>
+
+        {/* Formulario para agregar */}
+        <TaskForm onAdd={handleAddTask} />
+
+        {/* Lista de tareas */}
+        {tasks.length === 0 ? (
           <div className="empty-state">
-            <IonIcon icon={peopleOutline} size="large" color="medium" />
+            <IonIcon icon={listOutline} size="large" color="medium" />
             <IonText color="medium">
-              <p>No tienes contactos todavía.</p>
+              <p>No tienes tareas todavia.</p>
+              <p>¡Agrega tu primera tarea arriba!</p>
             </IonText>
           </div>
         ) : (
-          <div className="contact-list">
-            {contacts.map((contact) => (
-              <ContactItem
-                key={contact.id}
-                contact={contact}
-                onDelete={handleDelete}
+          <IonList className="task-list">
+            {tasks.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                onToggle={handleToggleTask}
+                onDelete={handleDeleteClick}
               />
             ))}
-          </div>
+          </IonList>
         )}
 
-        {/* Botón flotante para agregar contacto */}
-        <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton color="danger" onClick={openModal}>
-            <IonIcon icon={add} />
-          </IonFabButton>
-        </IonFab>
-
-        {/* Modal para agregar contacto */}
-        <IonModal isOpen={isModalOpen} onDidDismiss={closeModal}>
-          <IonHeader>
-            <IonToolbar color="danger">
-              <IonTitle>Nuevo Contacto</IonTitle>
-              <IonButtons slot="end">
-                <IonButton onClick={closeModal}>
-                  <IonIcon icon={closeOutline} />
-                </IonButton>
-              </IonButtons>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent className="ion-padding">
-            <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Nombre *</IonLabel>
-                <IonInput
-                  value={name}
-                  placeholder="Ej: Ana García"
-                  onIonChange={(e) => setName(e.detail.value!)}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Teléfono *</IonLabel>
-                <IonInput
-                  value={phone}
-                  placeholder="Ej: 315 555 0101"
-                  onIonChange={(e) => setPhone(e.detail.value!)}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Edad</IonLabel>
-                <IonInput
-                  value={age}
-                  placeholder="Ej: 25"
-                  type="number"
-                  onIonChange={(e) => setAge(e.detail.value!)}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Ciudad</IonLabel>
-                <IonInput
-                  value={city}
-                  placeholder="Ej: Cali"
-                  onIonChange={(e) => setCity(e.detail.value!)}
-                />
-              </IonItem>
-            </IonList>
-
-            <IonButton
-              expand="block"
-              color="danger"
-              className="ion-margin-top"
-              onClick={handleSave}
-              disabled={!name.trim() || !phone.trim()}
-            >
-              <IonIcon slot="start" icon={saveOutline} />
-              Guardar Contacto
-            </IonButton>
-          </IonContent>
-        </IonModal>
-
-        {/* Alerta de confirmación para eliminar */}
+        {/* Alerta de confirmacion */}
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={() => setShowAlert(false)}
-          header="Eliminar contacto"
-          message="¿Estás seguro de que quieres eliminar este contacto?"
+          header="Eliminar tarea"
+          message="¿Seguro que quieres eliminar esta tarea?"
           buttons={[
             {
               text: 'Cancelar',

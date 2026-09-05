@@ -1,0 +1,13 @@
+.task-form {
+  padding: 16px;
+  background: var(--ion-background-color);
+  border-radius: 12px;
+  margin: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.task-form ion-item {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}

@@ -1,0 +1,33 @@
+.task-item {
+  --padding-start: 8px;
+  --inner-padding-end: 8px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  --background: var(--ion-color-light);
+}
+
+.task-completed {
+  opacity: 0.7;
+}
+
+.task-completed .task-title {
+  text-decoration: line-through;
+  color: var(--ion-color-medium);
+}
+
+.task-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.task-description {
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  margin-bottom: 2px;
+}
+
+.task-date {
+  font-size: 11px;
+  color: var(--ion-color-medium-shade);
+}

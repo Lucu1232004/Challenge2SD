@@ -1,8 +1,37 @@
-.contact-badge {
-  margin-right: 16px;
-  --background: white;
-  --color: var(--ion-color-danger);
-  font-weight: bold;
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px;
+  margin: 16px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-box ion-icon {
+  font-size: 24px;
+}
+
+.stat-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}
+
+.task-list {
+  background: transparent;
+  padding: 0 16px;
 }
 
 .empty-state {
@@ -10,16 +39,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 60vh;
+  padding: 40px 20px;
   text-align: center;
-  padding: 20px;
 }
 
 .empty-state ion-icon {
   font-size: 64px;
   margin-bottom: 16px;
-}
-
-.contact-list {
-  padding: 8px 0;
 }
