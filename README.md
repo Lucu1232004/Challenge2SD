@@ -40,14 +40,7 @@ Las funcionalidades son las mismas del Challenge 01, pero ahora con interfaz mov
 
 ### Contactos iniciales
 
-La app carga 4 contactos reales:
-
-| Nombre | Telefono | Edad | Ciudad |
-|--------|----------|------|--------|
-| Samuel Patino | 3175550971 | 21 | Cali |
-| Luisa Maria Holguin | 3162549803 | 20 | Cali |
-| Gabriel Eduardo Martinez | 3226244468 | 23 | Cali |
-| Sandra Lucumi | 3113368313 | 46 | Cali |
+La app carga 4 contactos de ejemplo con nombre, telefono, edad y ciudad.
 
 ---
 
