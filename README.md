@@ -1,4 +1,4 @@
-# Mis Contactos — PWA (Challenge 02)
+# Mis Contactos - PWA (Challenge 02)
 
 Aplicación de contactos construida en **React + Vite** para el **Challenge 01** y transformada en **PWA** con **estrategia híbrida de caché** para el **Challenge 02** del curso *Desarrollo de Software para Plataformas Móviles*.
 
@@ -64,4 +64,4 @@ Opciones:
 
 ## Autor
 
-**Samuel Patiño** — samuel.patino@uao.edu.co
+**Samuel Patiño** - samuel.patino@uao.edu.co
