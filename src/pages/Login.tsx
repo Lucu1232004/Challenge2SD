@@ -15,12 +15,9 @@ import {
   IonIcon,
   IonAlert,
 } from '@ionic/react';
-import { logInOutline, mailOutline, lockClosedOutline } from 'ionicons/icons';
-import { setLoggedIn } from '../data/storage';
+import { logInOutline, mailOutline, lockClosedOutline, personAddOutline } from 'ionicons/icons';
+import { login } from '../data/auth';
 import './Login.css';
-
-const VALID_EMAIL = 'user@mail.com';
-const VALID_PASSWORD = '123';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -30,12 +27,22 @@ const Login: React.FC = () => {
   const [showError, setShowError] = useState(false);
 
   const handleLogin = () => {
-    if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-      setLoggedIn(true);
+    if (!email.trim() || !password.trim()) {
+      setShowError(true);
+      return;
+    }
+
+    const success = login(email, password);
+
+    if (success) {
       navigate('/home', { replace: true });
     } else {
       setShowError(true);
     }
+  };
+
+  const goToRegister = () => {
+    navigate('/register');
   };
 
   return (
@@ -61,7 +68,7 @@ const Login: React.FC = () => {
               <IonInput
                 type="email"
                 value={email}
-                placeholder="user@mail.com"
+                placeholder="tu@email.com"
                 onIonChange={(e) => setEmail(e.detail.value || '')}
               />
             </IonItem>
@@ -71,7 +78,7 @@ const Login: React.FC = () => {
               <IonInput
                 type="password"
                 value={password}
-                placeholder="123"
+                placeholder="Tu contrasena"
                 onIonChange={(e) => setPassword(e.detail.value || '')}
               />
             </IonItem>
@@ -87,20 +94,23 @@ const Login: React.FC = () => {
             Iniciar Sesion
           </IonButton>
 
-          <IonText color="medium" className="ion-text-center login-hint">
-            <p>
-              <IonIcon icon={mailOutline} /> user@mail.com
-              <br />
-              <IonIcon icon={lockClosedOutline} /> 123
-            </p>
-          </IonText>
+          <div className="login-footer">
+            <IonText color="medium">
+              <p>
+                No tienes cuenta?{' '}
+                <IonButton fill="clear" color="danger" onClick={goToRegister} className="link-button">
+                  Registrate
+                </IonButton>
+              </p>
+            </IonText>
+          </div>
         </div>
 
         <IonAlert
           isOpen={showError}
           onDidDismiss={() => setShowError(false)}
           header="Error de autenticacion"
-          message="Correo o contrasena incorrectos. Intenta de nuevo."
+          message="Correo o contrasena incorrectos. Si no tienes cuenta, registrate."
           buttons={['OK']}
         />
       </IonContent>

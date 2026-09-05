@@ -17,7 +17,7 @@ import {
   IonButtons,
 } from '@ionic/react';
 import { add, peopleOutline, logOutOutline } from 'ionicons/icons';
-import { clearAuth } from '../data/storage';
+import { logout } from '../data/auth';
 import ContactItem from '../components/ContactItem';
 import { Contact, initialContacts } from '../data/contacts';
 import './Home.css';
@@ -54,7 +54,7 @@ const Home: React.FC = () => {
   };
 
   const handleLogout = () => {
-    clearAuth();
+    logout();
     navigate('/login', { replace: true });
   };
 

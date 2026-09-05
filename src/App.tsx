@@ -5,7 +5,8 @@ import Home from './pages/Home';
 import ContactDetail from './pages/ContactDetail';
 import AddContact from './pages/AddContact';
 import Login from './pages/Login';
-import { isLoggedIn } from './data/storage';
+import Register from './pages/Register';
+import { isLoggedIn } from './data/auth';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -49,6 +50,7 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/home"
           element={
