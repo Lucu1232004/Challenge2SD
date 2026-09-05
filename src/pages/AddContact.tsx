@@ -54,7 +54,7 @@ const AddContact: React.FC = () => {
               <IonIcon icon={closeOutline} />
             </IonButton>
           </IonButtons>
-          <IonTitle>Nuevo Contacto</IonTitle>
+          <IonTitle>Agregar contacto</IonTitle>
           <IonButtons slot="end">
             <IonButton
               onClick={handleSave}
@@ -69,38 +69,38 @@ const AddContact: React.FC = () => {
       <IonContent className="ion-padding">
         <IonList>
           <IonItem>
-            <IonLabel position="stacked">Nombre *</IonLabel>
+            <IonLabel position="stacked">Nombre completo *</IonLabel>
             <IonInput
-              value={name}
-              placeholder="Ej: Ana Garcia"
+            value={name}
+            placeholder="Ej: María García"
               onIonChange={(e) => setName(e.detail.value!)}
             />
           </IonItem>
 
           <IonItem>
-            <IonLabel position="stacked">Telefono *</IonLabel>
+            <IonLabel position="stacked">Teléfono *</IonLabel>
             <IonInput
-              value={phone}
-              placeholder="Ej: 315 555 0101"
+            value={phone}
+            placeholder="Ej: 315 555 0101"
               onIonChange={(e) => setPhone(e.detail.value!)}
             />
           </IonItem>
 
           <IonItem>
-            <IonLabel position="stacked">Edad</IonLabel>
+            <IonLabel position="stacked">Edad (opcional)</IonLabel>
             <IonInput
-              value={age}
-              placeholder="Ej: 25"
+            value={age}
+            placeholder="Ej: 25 años"
               type="number"
               onIonChange={(e) => setAge(e.detail.value!)}
             />
           </IonItem>
 
           <IonItem>
-            <IonLabel position="stacked">Ciudad</IonLabel>
+            <IonLabel position="stacked">Ciudad (opcional)</IonLabel>
             <IonInput
-              value={city}
-              placeholder="Ej: Cali"
+            value={city}
+            placeholder="Ej: Cali, Bogotá, Medellín"
               onIonChange={(e) => setCity(e.detail.value!)}
             />
           </IonItem>
@@ -114,7 +114,7 @@ const AddContact: React.FC = () => {
           disabled={!name.trim() || !phone.trim()}
         >
           <IonIcon slot="start" icon={saveOutline} />
-          Guardar Contacto
+          Guardar en mi agenda
         </IonButton>
       </IonContent>
     </IonPage>

@@ -1,4 +1,4 @@
-// Servicio de autenticacion - maneja registro, login y sesion
+// Servicio de autenticación - maneja registro, login y sesión
 // Usado en Challenge 04
 
 const SESSION_KEY = 'logged';
@@ -42,7 +42,7 @@ export const register = (email: string, password: string): { success: boolean; m
 
   // Validar que no exista
   if (users.some((u) => u.email === email)) {
-    return { success: false, message: 'Este correo ya esta registrado' };
+    return { success: false, message: 'Este correo ya está registrado. Prueba con otro o inicia sesión.' };
   }
 
   // Guardar nuevo usuario
@@ -52,7 +52,7 @@ export const register = (email: string, password: string): { success: boolean; m
   // Iniciar sesion automaticamente
   localStorage.setItem(SESSION_KEY, 'true');
 
-  return { success: true, message: 'Registro exitoso' };
+  return { success: true, message: '¡Registro exitoso!' };
 };
 
 // Cerrar sesion

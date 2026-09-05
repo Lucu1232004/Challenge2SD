@@ -49,7 +49,7 @@ const Login: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar color="danger">
-          <IonTitle>Iniciar Sesion</IonTitle>
+          <IonTitle>Iniciar Sesión</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -59,26 +59,26 @@ const Login: React.FC = () => {
             <IonIcon icon={logInOutline} color="danger" />
           </div>
 
-          <h2 className="login-title">Bienvenido</h2>
-          <p className="login-subtitle">Ingresa tus credenciales para continuar</p>
+          <h2 className="login-title">¡Bienvenido de nuevo!</h2>
+          <p className="login-subtitle">Ingresa tus datos para entrar a tu agenda</p>
 
           <IonList className="login-form">
             <IonItem>
-              <IonLabel position="stacked">Correo electronico</IonLabel>
+              <IonLabel position="stacked">Correo electrónico</IonLabel>
               <IonInput
                 type="email"
                 value={email}
-                placeholder="tu@email.com"
+                placeholder="ejemplo@correo.com"
                 onIonChange={(e) => setEmail(e.detail.value || '')}
               />
             </IonItem>
 
             <IonItem>
-              <IonLabel position="stacked">Contrasena</IonLabel>
+              <IonLabel position="stacked">Contraseña</IonLabel>
               <IonInput
                 type="password"
                 value={password}
-                placeholder="Tu contrasena"
+                placeholder="Escribe tu contraseña"
                 onIonChange={(e) => setPassword(e.detail.value || '')}
               />
             </IonItem>
@@ -91,15 +91,15 @@ const Login: React.FC = () => {
             onClick={handleLogin}
           >
             <IonIcon slot="start" icon={logInOutline} />
-            Iniciar Sesion
+            Iniciar Sesión
           </IonButton>
 
           <div className="login-footer">
             <IonText color="medium">
               <p>
-                No tienes cuenta?{' '}
+                ¿No tienes cuenta?{' '}
                 <IonButton fill="clear" color="danger" onClick={goToRegister} className="link-button">
-                  Registrate
+                  ¡Regístrate aquí!
                 </IonButton>
               </p>
             </IonText>
@@ -109,8 +109,8 @@ const Login: React.FC = () => {
         <IonAlert
           isOpen={showError}
           onDidDismiss={() => setShowError(false)}
-          header="Error de autenticacion"
-          message="Correo o contrasena incorrectos. Si no tienes cuenta, registrate."
+          header="Ups, algo salió mal"
+          message="El correo o la contraseña no coinciden. Si aún no tienes cuenta, puedes registrarte gratis."
           buttons={['OK']}
         />
       </IonContent>

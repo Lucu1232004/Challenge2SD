@@ -35,9 +35,9 @@ const ContactDetail: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <p>El contacto que buscas no existe.</p>
+          <p>No encontramos el contacto que buscas.</p>
           <IonButton expand="block" color="danger" onClick={() => navigate('/home')}>
-          Volver al inicio
+            Volver a mi agenda
           </IonButton>
         </IonContent>
       </IonPage>
@@ -54,7 +54,7 @@ const ContactDetail: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/home" />
           </IonButtons>
-          <IonTitle>Detalle del Contacto</IonTitle>
+          <IonTitle>Información del contacto</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -74,7 +74,7 @@ const ContactDetail: React.FC = () => {
             <div className="detail-item">
               <IonIcon icon={callOutline} color="danger" />
               <div className="detail-text">
-                <p className="detail-label">Telefono</p>
+                <p className="detail-label">Teléfono</p>
                 <p className="detail-value">{contact.phone}</p>
               </div>
             </div>
@@ -83,7 +83,7 @@ const ContactDetail: React.FC = () => {
               <IonIcon icon={calendarOutline} color="danger" />
               <div className="detail-text">
                 <p className="detail-label">Edad</p>
-                <p className="detail-value">{contact.age || 'No especificada'}</p>
+                <p className="detail-value">{contact.age || 'No especificada'} años</p>
               </div>
             </div>
 
@@ -104,7 +104,7 @@ const ContactDetail: React.FC = () => {
         className="ion-margin-top"
         onClick={() => navigate('/home')}
         >
-        Volver a la lista
+        Volver a mi agenda
         </IonButton>
       </IonContent>
     </IonPage>

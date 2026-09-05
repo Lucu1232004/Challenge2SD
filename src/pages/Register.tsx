@@ -73,7 +73,7 @@ const Register: React.FC = () => {
               <IonIcon icon={arrowBackOutline} />
             </IonButton>
           </IonButtons>
-          <IonTitle>Crear Cuenta</IonTitle>
+          <IonTitle>Crear cuenta nueva</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -83,36 +83,36 @@ const Register: React.FC = () => {
             <IonIcon icon={personAddOutline} color="danger" />
           </div>
 
-          <h2 className="register-title">Registrate</h2>
-          <p className="register-subtitle">Crea tu cuenta para empezar</p>
+          <h2 className="register-title">¡Únete a nosotros!</h2>
+          <p className="register-subtitle">Crea tu cuenta y guarda tus contactos favoritos</p>
 
           <IonList className="register-form">
             <IonItem>
-              <IonLabel position="stacked">Correo electronico</IonLabel>
+              <IonLabel position="stacked">Correo electrónico</IonLabel>
               <IonInput
                 type="email"
                 value={email}
-                placeholder="tu@email.com"
+                placeholder="ejemplo@correo.com"
                 onIonChange={(e) => setEmail(e.detail.value || '')}
               />
             </IonItem>
 
             <IonItem>
-              <IonLabel position="stacked">Contrasena</IonLabel>
+              <IonLabel position="stacked">Contraseña</IonLabel>
               <IonInput
                 type="password"
                 value={password}
-                placeholder="Minimo 4 caracteres"
+                placeholder="Mínimo 4 caracteres"
                 onIonChange={(e) => setPassword(e.detail.value || '')}
               />
             </IonItem>
 
             <IonItem>
-              <IonLabel position="stacked">Confirmar contrasena</IonLabel>
+              <IonLabel position="stacked">Confirmar contraseña</IonLabel>
               <IonInput
                 type="password"
                 value={confirmPassword}
-                placeholder="Repite tu contrasena"
+                placeholder="Repite tu contraseña"
                 onIonChange={(e) => setConfirmPassword(e.detail.value || '')}
               />
             </IonItem>
@@ -125,15 +125,15 @@ const Register: React.FC = () => {
             onClick={handleRegister}
           >
             <IonIcon slot="start" icon={personAddOutline} />
-            Crear Cuenta
+            Crear mi cuenta
           </IonButton>
 
           <div className="register-footer">
             <IonText color="medium">
               <p>
-                Ya tienes cuenta?{' '}
+                ¿Ya tienes cuenta?{' '}
                 <IonButton fill="clear" color="danger" onClick={goToLogin} className="link-button">
-                  Inicia sesion
+                  Inicia sesión aquí
                 </IonButton>
               </p>
             </IonText>
@@ -154,8 +154,8 @@ const Register: React.FC = () => {
             setShowSuccess(false);
             navigate('/home', { replace: true });
           }}
-          header="Registro exitoso"
-          message="Tu cuenta ha sido creada. Bienvenido!"
+          header="¡Listo!"
+          message="Tu cuenta se creó correctamente. ¡Bienvenido a tu agenda!"
           buttons={['Continuar']}
         />
       </IonContent>

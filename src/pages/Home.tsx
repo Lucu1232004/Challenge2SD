@@ -73,11 +73,11 @@ const Home: React.FC = () => {
       <IonPage>
         <IonHeader>
           <IonToolbar color="danger">
-            <IonTitle>Mis Contactos</IonTitle>
+            <IonTitle>Mi Agenda</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonLoading isOpen={true} message="Cargando contactos..." />
+          <IonLoading isOpen={true} message="Cargando tu agenda..." />
         </IonContent>
       </IonPage>
     );
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
           <div className="empty-state">
             <IonIcon icon={peopleOutline} size="large" color="medium" />
             <IonText color="medium">
-              <p>No tienes contactos todavía.</p>
+              <p>Tu agenda está vacía. ¡Agrega tu primer contacto!</p>
             </IonText>
           </div>
         ) : (
@@ -130,8 +130,8 @@ const Home: React.FC = () => {
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={() => setShowAlert(false)}
-          header="Eliminar contacto"
-          message="¿Estás seguro de que quieres eliminar este contacto?"
+          header="¿Eliminar contacto?"
+          message="¿Seguro que quieres quitar este contacto de tu agenda? Esta acción no se puede deshacer."
           buttons={[
             {
               text: 'Cancelar',
