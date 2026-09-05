@@ -4,6 +4,8 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import ContactDetail from './pages/ContactDetail';
 import AddContact from './pages/AddContact';
+import Login from './pages/Login';
+import { isLoggedIn } from './data/storage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -37,14 +39,50 @@ import './theme/variables.css';
 
 setupIonicReact();
 
+// Componente para proteger rutas privadas
+const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return isLoggedIn() ? <>{children}</> : <Navigate to="/login" replace />;
+};
+
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route path="/home" element={<Home />} />
-        <Route path="/contact/:id" element={<ContactDetail />} />
-        <Route path="/contact/new" element={<AddContact />} />
-        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/contact/:id"
+          element={
+            <PrivateRoute>
+              <ContactDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/contact/new"
+          element={
+            <PrivateRoute>
+              <AddContact />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            isLoggedIn() ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

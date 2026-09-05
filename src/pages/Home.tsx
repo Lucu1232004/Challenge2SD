@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   IonContent,
   IonHeader,
@@ -13,8 +13,11 @@ import {
   IonAlert,
   IonBadge,
   IonText,
+  IonButton,
+  IonButtons,
 } from '@ionic/react';
-import { add, peopleOutline } from 'ionicons/icons';
+import { add, peopleOutline, logOutOutline } from 'ionicons/icons';
+import { clearAuth } from '../data/storage';
 import ContactItem from '../components/ContactItem';
 import { Contact, initialContacts } from '../data/contacts';
 import './Home.css';
@@ -25,6 +28,7 @@ const Home: React.FC = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<number | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Simular carga de datos (igual que en Challenge 01)
   useEffect(() => {
@@ -47,6 +51,11 @@ const Home: React.FC = () => {
   const handleDelete = (id: number) => {
     setContactToDelete(id);
     setShowAlert(true);
+  };
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate('/login', { replace: true });
   };
 
   const confirmDelete = () => {
@@ -79,6 +88,11 @@ const Home: React.FC = () => {
       <IonHeader>
         <IonToolbar color="danger">
           <IonTitle>Mis Contactos</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={handleLogout}>
+              <IonIcon icon={logOutOutline} />
+            </IonButton>
+          </IonButtons>
           <IonBadge slot="end" color="light" className="contact-badge">
             {contacts.length}
           </IonBadge>
