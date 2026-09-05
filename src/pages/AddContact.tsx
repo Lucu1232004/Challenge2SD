@@ -72,7 +72,7 @@ const AddContact: React.FC = () => {
             <IonLabel position="stacked">Nombre completo *</IonLabel>
             <IonInput
             value={name}
-            placeholder="Ej: María García"
+            placeholder="Ej: Kylian Mbappee"
               onIonChange={(e) => setName(e.detail.value!)}
             />
           </IonItem>
