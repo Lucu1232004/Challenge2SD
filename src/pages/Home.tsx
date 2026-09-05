@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   IonContent,
   IonHeader,
@@ -12,31 +13,18 @@ import {
   IonAlert,
   IonBadge,
   IonText,
-  IonModal,
-  IonButton,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonButtons,
 } from '@ionic/react';
-import { add, peopleOutline, closeOutline, saveOutline } from 'ionicons/icons';
+import { add, peopleOutline } from 'ionicons/icons';
 import ContactItem from '../components/ContactItem';
 import { Contact, initialContacts } from '../data/contacts';
 import './Home.css';
 
 const Home: React.FC = () => {
-  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [contacts, setContacts] = useState([] as Contact[]);
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [contactToDelete, setContactToDelete] = useState<number | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Formulario
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
-  const [city, setCity] = useState('');
+  const location = useLocation();
 
   // Simular carga de datos (igual que en Challenge 01)
   useEffect(() => {
@@ -46,6 +34,15 @@ const Home: React.FC = () => {
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Recibir contacto nuevo desde la pagina AddContact via state navigation
+  useEffect(() => {
+    if (location.state?.newContact) {
+      setContacts((prev) => [...prev, location.state.newContact]);
+      // Limpiar el state para no agregarlo de nuevo al volver
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleDelete = (id: number) => {
     setContactToDelete(id);
@@ -60,32 +57,7 @@ const Home: React.FC = () => {
     setShowAlert(false);
   };
 
-  const openModal = () => {
-    setName('');
-    setPhone('');
-    setAge('');
-    setCity('');
-    setIsModalOpen(true);
-  };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSave = () => {
-    if (!name.trim() || !phone.trim()) return;
-
-    const newContact: Contact = {
-      id: Date.now(),
-      name: name.trim(),
-      phone: phone.trim(),
-      age: age.trim(),
-      city: city.trim(),
-    };
-
-    setContacts((prev) => [...prev, newContact]);
-    closeModal();
-  };
 
   if (loading) {
     return (
@@ -133,77 +105,12 @@ const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Botón flotante para agregar contacto */}
+        {/* Boton flotante para agregar contacto - navega a pagina nueva */}
         <IonFab slot="fixed" vertical="bottom" horizontal="end">
-          <IonFabButton color="danger" onClick={openModal}>
+          <IonFabButton color="danger" routerLink="/contact/new" routerDirection="forward">
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>
-
-        {/* Modal para agregar contacto */}
-        <IonModal isOpen={isModalOpen} onDidDismiss={closeModal}>
-          <IonHeader>
-            <IonToolbar color="danger">
-              <IonTitle>Nuevo Contacto</IonTitle>
-              <IonButtons slot="end">
-                <IonButton onClick={closeModal}>
-                  <IonIcon icon={closeOutline} />
-                </IonButton>
-              </IonButtons>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent className="ion-padding">
-            <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Nombre *</IonLabel>
-                <IonInput
-                  value={name}
-                  placeholder="Ej: Ana García"
-                  onIonChange={(e) => setName(e.detail.value!)}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Teléfono *</IonLabel>
-                <IonInput
-                  value={phone}
-                  placeholder="Ej: 315 555 0101"
-                  onIonChange={(e) => setPhone(e.detail.value!)}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Edad</IonLabel>
-                <IonInput
-                  value={age}
-                  placeholder="Ej: 25"
-                  type="number"
-                  onIonChange={(e) => setAge(e.detail.value!)}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Ciudad</IonLabel>
-                <IonInput
-                  value={city}
-                  placeholder="Ej: Cali"
-                  onIonChange={(e) => setCity(e.detail.value!)}
-                />
-              </IonItem>
-            </IonList>
-
-            <IonButton
-              expand="block"
-              color="danger"
-              className="ion-margin-top"
-              onClick={handleSave}
-              disabled={!name.trim() || !phone.trim()}
-            >
-              <IonIcon slot="start" icon={saveOutline} />
-              Guardar Contacto
-            </IonButton>
-          </IonContent>
-        </IonModal>
 
         {/* Alerta de confirmación para eliminar */}
         <IonAlert

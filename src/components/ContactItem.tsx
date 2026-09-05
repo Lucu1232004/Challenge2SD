@@ -28,15 +28,6 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, onDelete }) => {
           </div>
           <div className="contact-info">
             <h3 className="contact-name">{contact.name}</h3>
-            <p className="contact-detail">
-              <strong>Tel:</strong> {contact.phone}
-            </p>
-            <p className="contact-detail">
-              <strong>Edad:</strong> {contact.age || '—'}
-            </p>
-            <p className="contact-detail">
-              <strong>Ciudad:</strong> {contact.city || '—'}
-            </p>
           </div>
           <div className="contact-actions">
             <IonButton
