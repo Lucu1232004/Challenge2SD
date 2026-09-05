@@ -1,5 +1,5 @@
-import { IonItem, IonLabel, IonButton, IonIcon, IonCard, IonCardContent } from '@ionic/react';
-import { trashOutline } from 'ionicons/icons';
+import { IonButton, IonIcon, IonCard, IonCardContent } from '@ionic/react';
+import { trashOutline, chevronForwardOutline } from 'ionicons/icons';
 import { Contact, avatarColors } from '../data/contacts';
 import './ContactItem.css';
 
@@ -13,7 +13,11 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, onDelete }) => {
   const initial = contact.name.charAt(0).toUpperCase();
 
   return (
-    <IonCard className="contact-card">
+    <IonCard
+      className="contact-card"
+      routerLink={`/contact/${contact.id}`}
+      routerDirection="forward"
+    >
       <IonCardContent className="contact-card-content">
         <div className="contact-header">
           <div
@@ -34,14 +38,20 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, onDelete }) => {
               <strong>Ciudad:</strong> {contact.city || '—'}
             </p>
           </div>
-          <IonButton
-            fill="clear"
-            color="danger"
-            onClick={() => onDelete(contact.id)}
-            className="delete-button"
-          >
-            <IonIcon icon={trashOutline} />
-          </IonButton>
+          <div className="contact-actions">
+            <IonButton
+              fill="clear"
+              color="danger"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(contact.id);
+              }}
+              className="delete-button"
+            >
+              <IonIcon icon={trashOutline} />
+            </IonButton>
+            <IonIcon icon={chevronForwardOutline} color="medium" className="arrow-icon" />
+          </div>
         </div>
       </IonCardContent>
     </IonCard>
