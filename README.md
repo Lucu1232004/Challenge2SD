@@ -1,81 +1,108 @@
-# Challenge 03 - App de Contactos en Ionic (Practice 01)
+# Challenge 04 - App de Contactos Ionic con Routing y Login
 
 ## Que es esto?
 
-Este es el **Challenge 03** de la materia Desarrollo de Software para Plataformas Moviles. Es la migracion de mi app de contactos (hecha en React puro para los Challenges 01 y 02) a **Ionic**, un framework que me permite crear apps moviles usando tecnologias web como HTML, CSS y JavaScript/TypeScript.
+Este es el **Challenge 04** de la materia Desarrollo de Software para Plataformas Moviles. Es la version final de la app de contactos que incluye **navegacion entre paginas** (Practice 02) y **autenticacion con localStorage** (Challenge 04).
 
-La gran diferencia con la PWA del Challenge 02 es que esta app se compila como una **app nativa de Android** usando **Capacitor**. Eso significa que se instala directamente en el celular como cualquier otra app de la Play Store, con su propio icono, acceso nativo al hardware y mejor rendimiento.
-
----
-
-## Por que Ionic?
-
-En las clases anteriores tenia una app web (Challenge 01) que luego converti en PWA (Challenge 02). La PWA funciona bien, pero tiene limitaciones:
-- No puede acceder a todas las funciones del celular (camara, bluetooth, sensores, etc.)
-- En iOS tiene restricciones (Safari no permite PWAs tan abiertamente)
-- No se siente 100% como una app nativa
-
-**Ionic resuelve eso**:
-- Usa componentes visuales que parecen nativos (botones, listas, tarjetas, modales)
-- Con Capacitor, se compila a codigo nativo de Android e iOS
-- Puedo usar el mismo codigo web (React) y empaquetarlo como app movil
-- Tiene animaciones de transicion propias de apps moviles
-- Soporta gestos como deslizar para atras (back gesture)
+Partimos del Challenge 03 (Ionic basico) y le agregamos:
+- Pagina de detalle de cada contacto
+- Pagina separada para agregar contactos
+- Sistema de login y registro con localStorage
+- Proteccion de rutas privadas
 
 ---
 
-## Que hace la app?
+## Funcionalidades
 
-Las funcionalidades son las mismas del Challenge 01, pero ahora con interfaz movil nativa:
+### Navegacion y Routing (Practice 02)
 
-1. **Ver lista de contactos**: Abres la app y aparece un loader. Luego se muestran las tarjetas con los contactos en formato movil.
+1. **Lista de contactos** (`/home`): Muestra solo el nombre de cada contacto en tarjetas clickeables.
 
-2. **Agregar contactos**: Tocas el boton flotante rojo con el signo **+** en la esquina inferior derecha. Se abre un **modal** (ventana emergente tipo app movil) donde escribes los datos. Al guardar, el contacto aparece en la lista.
+2. **Detalle de contacto** (`/contact/:id`): Al tocar una tarjeta, se abre una pantalla con:
+   - Avatar grande del contacto
+   - Nombre completo
+   - Telefono, edad y ciudad con iconos
+   - Boton para volver a la lista
+   - Boton de "Atras" nativo de Ionic
 
-3. **Eliminar contactos**: Tocas el icono de la basura en cada tarjeta. Aparece una **alerta nativa** de Ionic que te pregunta si estas seguro. Al confirmar, se elimina.
+3. **Agregar contacto** (`/contact/new`): Pagina separada con formulario para crear contactos.
+   - Header con boton de cerrar (X) y guardar (check)
+   - Campos: nombre, telefono, edad, ciudad
+   - Al guardar, vuelve a la lista y aparece el nuevo contacto
 
-4. **Contador**: En el header rojo aparece un numero que indica cuantos contactos tienes.
+### Autenticacion (Challenge 04)
 
-5. **Estado vacio**: Si borras todos los contactos, aparece un mensaje amigable con un icono grande.
+4. **Registro** (`/register`): Crea una cuenta nueva.
+   - Correo electronico
+   - Contrasena (minimo 4 caracteres)
+   - Confirmar contrasena
+   - Validacion de campos
+   - Si el correo ya existe, muestra error
+   - Al registrarse, inicia sesion automaticamente
 
-### Contactos iniciales
+5. **Login** (`/login`): Inicia sesion con cuenta existente.
+   - Correo electronico
+   - Contrasena
+   - Validacion de credenciales
+   - Enlace a "Registrate" si no tienes cuenta
 
-La app carga 4 contactos reales:
+6. **Sesion persistente**: Una vez logueado, la app recuerda tu sesion usando localStorage. Al cerrar y abrir la app, no pide login de nuevo.
 
-| Nombre | Telefono | Edad | Ciudad |
-|--------|----------|------|--------|
-| Samuel Patino | 3175550971 | 21 | Cali |
-| Luisa Maria Holguin | 3162549803 | 20 | Cali |
-| Gabriel Eduardo Martinez | 3226244468 | 23 | Cali |
-| Sandra Lucumi | 3113368313 | 46 | Cali |
+7. **Logout**: Boton de cerrar sesion en el header de la lista de contactos. Al tocarlo, limpia la sesion y vuelve al login.
+
+8. **Proteccion de rutas**: Las paginas de contactos (lista, detalle, agregar) estan protegidas. Si no estas logueado, te redirige al login automaticamente.
 
 ---
 
 ## Tecnologias usadas
 
-- **Ionic 9**: Framework de UI para apps moviles hibridas.
-- **React 19**: Libreria para construir la interfaz (Ionic funciona con React, Angular o Vue).
-- **TypeScript**: JavaScript con tipos. Ayuda a evitar errores y autocompletar codigo.
-- **Capacitor 8**: Empaqueta el codigo web en una app nativa de Android/iOS.
-- **Vite**: Herramienta de construccion rapida.
-- **Componentes Ionic**: IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonModal, IonFab, IonButton, IonInput, IonItem, IonLabel, IonList, IonBadge, IonAlert, IonLoading, IonIcon.
+- **Ionic 9**: Framework de UI para apps moviles
+- **React 19**: Libreria para la interfaz
+- **TypeScript**: Tipado estatico
+- **Capacitor 8**: Compilacion a app nativa Android
+- **React Router v6**: Navegacion entre paginas
+- **localStorage**: Persistencia de sesion y usuarios
+- **Componentes Ionic**: IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonButton, IonInput, IonItem, IonLabel, IonList, IonBadge, IonAlert, IonLoading, IonIcon, IonBackButton, IonFab, IonModal
 
 ---
 
-## Diferencias con el Challenge 01/02
+## Estructura de rutas
 
-| Aspecto | Challenge 01/02 (React puro) | Challenge 03 (Ionic) |
-|---------|------------------------------|----------------------|
-| Framework | React + Vite | Ionic + React + TypeScript |
-| Archivos | `.jsx` | `.tsx` (TypeScript) |
-| Componentes UI | HTML + CSS manual | Componentes Ionic (`IonCard`, `IonModal`, etc.) |
-| Tipografia | Fuente del sistema | Poppins (fuentes de Google) |
-| Boton agregar | Boton normal | `IonFab` (boton flotante nativo) |
-| Formulario | Form HTML en la misma pagina | `IonModal` (ventana emergente tipo app) |
-| Confirmacion eliminar | `window.confirm()` | `IonAlert` (alerta nativa de Ionic) |
-| Loader | Componente CSS personalizado | `IonLoading` (spinner nativo) |
-| Tarjetas | `div` con CSS | `IonCard` (tarjeta nativa con sombras y bordes) |
-| App movil | Solo PWA (navegador) | App nativa Android via Capacitor |
+| Ruta | Pagina | Protegida | Descripcion |
+|------|--------|-----------|-------------|
+| `/` | Redireccion | No | Si estas logueado va a `/home`, si no a `/login` |
+| `/login` | Login | No | Iniciar sesion con cuenta existente |
+| `/register` | Registro | No | Crear cuenta nueva |
+| `/home` | Lista de contactos | Si | Ver contactos, eliminar, navegar a detalle |
+| `/contact/:id` | Detalle | Si | Ver info completa de un contacto |
+| `/contact/new` | Agregar contacto | Si | Formulario para crear contacto |
+
+---
+
+## Como funciona la autenticacion
+
+### Registro
+1. El usuario completa el formulario de registro
+2. Se valida que el correo no exista ya
+3. Se guarda el usuario en localStorage (clave `users`)
+4. Se marca como logueado (clave `logged` = true)
+5. Se redirige a la lista de contactos
+
+### Login
+1. El usuario ingresa correo y contrasena
+2. Se busca en la lista de usuarios registrados
+3. Si coincide, se marca como logueado
+4. Se redirige a la lista de contactos
+
+### Sesion persistente
+- Al abrir la app, se verifica si existe `logged = true` en localStorage
+- Si existe, se salta el login y va directo a la lista
+- Si no existe, se muestra el login
+
+### Logout
+- Se elimina `logged` del localStorage
+- Se redirige al login
+- La proxima vez se pedira iniciar sesion de nuevo
 
 ---
 
@@ -86,7 +113,7 @@ La app carga 4 contactos reales:
 ```bash
 git clone https://github.com/Lucu1232004/Challenge2SD.git
 cd Challenge2SD
-git checkout challenge-03
+git checkout challenge-04
 ```
 
 ### Paso 2: Instalar dependencias
@@ -95,89 +122,42 @@ git checkout challenge-03
 npm install
 ```
 
-### Paso 3: Correr en el navegador (modo desarrollo)
+### Paso 3: Correr en navegador
 
 ```bash
 ionic serve
 ```
 
-O tambien:
+O:
 
 ```bash
 npm run dev
 ```
 
-Se abrira en `http://localhost:8100`. Se vera como un celular en tu navegador.
+Se abre en `http://localhost:8100`.
 
-### Paso 4: Construir para produccion
-
-```bash
-npm run build
-```
-
-Esto genera la carpeta `dist/` con todo optimizado.
-
----
-
-## Como instalarlo en tu celular Android
-
-### Requisitos previos
-
-1. **Android Studio** instalado y configurado.
-2. **Java 17** instalado (puede ser necesario dependiendo de la version de Gradle).
-3. Tu celular con **modo desarrollador activado**:
-   - Ve a Ajustes > Acerca del telefono
-   - Toca "Numero de compilacion" 7 veces
-   - Ve a Opciones de desarrollador y activa "Depuracion USB"
-4. Conecta tu celular al PC por USB y acepta el permiso de depuracion.
-
-### Paso 1: Compilar la app web
+### Paso 4: Compilar para Android
 
 ```bash
 npm run build
-```
-
-### Paso 2: Copiar archivos a Android
-
-```bash
 npx cap copy android
-```
-
-Esto copia la carpeta `dist/` al proyecto de Android.
-
-### Paso 3: Sincronizar plugins de Capacitor
-
-```bash
 npx cap sync android
 ```
 
-Esto actualiza los plugins nativos que necesita la app.
-
-### Paso 4: Abrir en Android Studio
+### Paso 5: Abrir en Android Studio
 
 ```bash
 npx cap open android
 ```
 
-O abre Android Studio manualmente y selecciona la carpeta `android/` dentro del proyecto.
+O abre Android Studio manualmente y selecciona la carpeta `android/`.
 
-### Paso 5: Ejecutar en el celular
+### Paso 6: Ejecutar en celular
 
-1. En Android Studio, asegurate de que tu celular aparece seleccionado en la barra superior.
-2. Toca el boton verde de **Run** (triangulo).
-3. Espera a que compile e instale.
-4. La app "contactos" aparecera en tu celular.
-
-### Si Android Studio abre otro proyecto
-
-A veces Android Studio abre una app de ejemplo en vez de la tuya. Para arreglarlo:
-
-1. Cierra Android Studio.
-2. Vuelve a abrirlo.
-3. Selecciona **Open** (NO "New Project").
-4. Navega a `C:\Users\Hogar\Desktop\Clase3DS\contactos\android` (o la ruta donde tengas el proyecto).
-5. Espera a que sincronice Gradle.
-6. Dale Run.
+1. Conecta tu celular con USB (modo desarrollador activado)
+2. En Android Studio, selecciona tu dispositivo
+3. Toca el boton verde **Run**
+4. Espera a que compile e instale
 
 ---
 
@@ -185,76 +165,87 @@ A veces Android Studio abre una app de ejemplo en vez de la tuya. Para arreglarl
 
 ```
 contactos/
-├── android/                       # Proyecto Android nativo (generado por Capacitor)
-│   ├── app/
-│   │   ├── src/main/
-│   │   │   ├── assets/public/     # Archivos web compilados (HTML, JS, CSS)
-│   │   │   ├── java/              # Codigo Java nativo
-│   │   │   └── res/               # Recursos (iconos, splash screens, layouts)
-│   │   └── build.gradle           # Configuracion de build de Android
-│   └── ...
+├── android/                       # Proyecto Android nativo
 ├── src/
 │   ├── components/
-│   │   ├── ContactItem.tsx        # Tarjeta de contacto con avatar rojo
-│   │   └── ContactItem.css        # Estilos del componente
+│   │   ├── ContactItem.tsx        # Tarjeta de contacto en lista
+│   │   └── ContactItem.css
 │   ├── data/
-│   │   └── contacts.ts            # Datos iniciales + tipos + colores de avatares
+│   │   ├── contacts.ts            # Datos iniciales y tipos
+│   │   └── auth.ts                # Servicio de autenticacion
 │   ├── pages/
-│   │   ├── Home.tsx               # Pagina principal con lista, modal, alertas
-│   │   └── Home.css               # Estilos de la pagina
-│   ├── App.tsx                    # Router y estructura base de la app
+│   │   ├── Home.tsx               # Lista de contactos
+│   │   ├── Home.css
+│   │   ├── ContactDetail.tsx      # Detalle de contacto
+│   │   ├── ContactDetail.css
+│   │   ├── AddContact.tsx         # Formulario agregar contacto
+│   │   ├── AddContact.css
+│   │   ├── Login.tsx              # Pagina de login
+│   │   ├── Login.css
+│   │   ├── Register.tsx           # Pagina de registro
+│   │   └── Register.css
+│   ├── App.tsx                    # Router con proteccion de rutas
 │   ├── main.tsx                   # Punto de entrada
-│   ├── theme/
-│   │   └── variables.css          # Variables de tema de Ionic
-│   └── ...
-├── capacitor.config.ts            # Configuracion de Capacitor
-├── ionic.config.json              # Configuracion de Ionic
-├── index.html                     # HTML principal
+│   └── theme/
+│       └── variables.css
+├── capacitor.config.ts
+├── ionic.config.json
+├── index.html
 ├── package.json
-├── tsconfig.json                  # Configuracion de TypeScript
-├── vite.config.ts                 # Configuracion de Vite
-└── README.md                      # Este archivo
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
 ```
 
 ---
 
 ## Componentes Ionic usados
 
-Estos son los componentes de Ionic que reemplazan el HTML/CSS manual del Challenge 01:
+| Componente | Uso |
+|------------|-----|
+| `IonPage` | Estructura base de cada pantalla |
+| `IonHeader` + `IonToolbar` | Barra superior con titulo y botones |
+| `IonTitle` | Titulo en el header |
+| `IonContent` | Area de contenido con scroll |
+| `IonCard` | Tarjetas de contacto |
+| `IonButton` | Botones de accion |
+| `IonInput` | Campos de texto (formularios) |
+| `IonLabel` | Etiquetas para inputs |
+| `IonItem` | Filas de formulario |
+| `IonList` | Listas de items |
+| `IonBadge` | Contador de contactos |
+| `IonAlert` | Alertas de confirmacion y error |
+| `IonLoading` | Pantalla de carga |
+| `IonIcon` | Iconos vectoriales |
+| `IonBackButton` | Boton de retroceso nativo |
+| `IonFab` + `IonFabButton` | Boton flotante para agregar |
+| `IonButtons` | Grupo de botones en header |
 
-| Componente Ionic | Que reemplaza | Para que sirve |
-|------------------|---------------|----------------|
-| `IonPage` | `div` contenedor | Estructura base de toda pantalla en Ionic |
-| `IonHeader` + `IonToolbar` | `header` manual | Barra superior estilo app movil |
-| `IonTitle` | `h1` manual | Titulo en el header |
-| `IonContent` | `main` o `div` | Area de contenido con scroll nativo |
-| `IonCard` + `IonCardContent` | `div` con borde | Tarjeta visual con sombra y bordes redondeados |
-| `IonModal` | Formulario inline | Ventana emergente tipo app movil |
-| `IonFab` + `IonFabButton` | Boton normal | Boton flotante circular en la esquina |
-| `IonButton` | `button` HTML | Boton con estilos nativos de Ionic |
-| `IonInput` | `input` HTML | Campo de texto con estilos moviles |
-| `IonLabel` | `label` HTML | Etiqueta para inputs |
-| `IonItem` | `div` contenedor | Fila estandar para listas y formularios |
-| `IonList` | `ul` HTML | Lista con estilos nativos |
-| `IonBadge` | `span` con CSS | Burbuja de numero (usado para el contador) |
-| `IonAlert` | `window.confirm()` | Alerta nativa con botones personalizados |
-| `IonLoading` | Spinner CSS manual | Pantalla de carga con spinner nativo |
-| `IonIcon` | `img` o `svg` | Iconos vectoriales (agregar, eliminar, cerrar, etc.) |
+---
+
+## Hooks de React usados
+
+| Hook | Para que sirve |
+|------|----------------|
+| `useState` | Manejar estado de componentes (contactos, formularios, alertas) |
+| `useEffect` | Ejecutar codigo al montar componente (cargar datos, recibir state) |
+| `useParams` | Obtener parametros de URL (id del contacto) |
+| `useNavigate` | Navegar programaticamente entre paginas |
+| `useLocation` | Acceder al state de navegacion (pasar datos entre paginas) |
 
 ---
 
 ## Que aprendi con este challenge?
 
-- Que es Ionic y como se diferencia de una web normal o una PWA.
-- Como crear un proyecto Ionic con React y TypeScript.
-- La anatomia basica de una app Ionic: `IonApp`, `IonPage`, `IonHeader`, `IonContent`.
-- Como usar componentes Ionic en vez de HTML/CSS manual.
-- La diferencia entre JSX (React puro) y TSX (React + TypeScript).
-- Como funciona Capacitor para empaquetar apps web como apps nativas.
-- Como conectar Android Studio con un proyecto Ionic.
-- Como compilar, copiar y sincronizar archivos para Android.
-- Como activar modo desarrollador en un celular Android.
-- Que las apps Ionic se sienten nativas gracias a las animaciones y gestos de Ionic.
+- Como crear rutas dinamicas con React Router (`/contact/:id`)
+- Como pasar datos entre paginas con state navigation
+- Como usar `routerLink` y `routerDirection` en componentes Ionic
+- Como proteger rutas con componentes de orden superior
+- Como usar localStorage para persistencia de datos
+- Como crear un sistema completo de autenticacion (registro, login, logout)
+- Como validar formularios antes de enviar
+- Como manejar errores y mostrar alertas al usuario
+- La diferencia entre navegacion con `routerLink` y programatica con `useNavigate`
 
 ---
 
@@ -264,12 +255,14 @@ Estos son los componentes de Ionic que reemplazan el HTML/CSS manual del Challen
 |------|--------|-------------|
 | Challenge 01 | App de Contactos React | React puro con Vite. Listar, agregar, eliminar contactos. |
 | Challenge 02 | PWA | Transformar la app en PWA instalable con Service Worker hibrido. |
-| Practice 01 | Migracion a Ionic | Misma app pero usando componentes Ionic y compilada para Android con Capacitor. |
+| Practice 01 | Migracion a Ionic | Misma app con componentes Ionic, compilada para Android. |
+| Practice 02 | Routing | Agregar pagina de detalle, pagina para crear contactos, navegacion entre pantallas. |
+| Challenge 04 | Login con localStorage | Sistema completo de autenticacion: registro, login, logout, proteccion de rutas. |
 
 ---
 
 ## Autor
 
-**Samuel Patiño** - samuel.patino@uao.edu.co
+**Samuel Patino** - samuel.patino@uao.edu.co
 
 Proyecto desarrollado para la clase de Desarrollo de Software para Plataformas Moviles.
