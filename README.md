@@ -207,4 +207,6 @@ Challenge2SD/
 
 ## Autor
 
+**Samuel Patiño** - samuel.patino@uao.edu.co
+
 Proyecto desarrollado para la clase de Desarrollo de Software para Plataformas Moviles.
