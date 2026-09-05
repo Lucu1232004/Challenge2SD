@@ -3,6 +3,7 @@ import { fetchContacts } from './api/contacts.js';
 import Loader from './components/Loader.jsx';
 import ContactForm from './components/ContactForm.jsx';
 import ContactList from './components/ContactList.jsx';
+import heroImage from './assets/RealMadrid.jpg';
 
 function App() {
   const [contacts, setContacts] = useState([]);
@@ -29,6 +30,8 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
+        {/* imagen del componente padre (Challenge 02) */}
+        <img className="app-image" src={heroImage} alt="Banner de la aplicación" />
         <h1>Mis Contactos</h1>
         <span className="badge">{contacts.length} contactos</span>
       </header>
