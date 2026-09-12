@@ -1,0 +1,71 @@
+/* MediClinic SL - Tema verde clínico + negro, toque innovador Timeline */
+:root {
+  --ion-background-color: #0B1210;
+  --ion-text-color: #E6F4EF;
+  --ion-color-primary: #00D68F;
+  --ion-color-primary-contrast: #06110D;
+  --ion-card-background: #14201C;
+  --ion-toolbar-background: #0E1714;
+  --ion-tab-bar-background: #0E1714;
+  --ion-border-color: #1E3A32;
+}
+
+ion-content {
+  --background: radial-gradient(900px 400px at 20% -10%, #0f2e26 0%, #0B1210 60%) fixed, #0B1210;
+}
+
+.brand-name { font-weight: 800; font-size: 22px; letter-spacing: .5px; }
+.brand-sub { color: #9AB8AD; font-size: 12px; }
+
+/* Timeline */
+.timeline { position: relative; padding: 8px 0 8px 54px; }
+.timeline::before {
+  content: ''; position: absolute; left: 26px; top: 10px; bottom: 10px; width: 2px;
+  background: linear-gradient(180deg, #00D68F, #1E3A32);
+  opacity: .7;
+}
+.t-item { position: relative; margin-bottom: 14px; }
+.t-hour {
+  position: absolute; left: -54px; top: 14px; width: 44px; text-align: right;
+  font-weight: 800; color: #00D68F; font-size: 13px;
+}
+.t-dot {
+  position: absolute; left: -34px; top: 16px; width: 14px; height: 14px; border-radius: 50%;
+  background: #00D68F; box-shadow: 0 0 0 4px rgba(0,214,143,.18), 0 0 14px rgba(0,214,143,.7);
+}
+.t-dot.pendiente { background: #FFC94D; box-shadow: 0 0 0 4px rgba(255,201,77,.18), 0 0 14px rgba(255,201,77,.6); }
+.t-dot.en_camino { background: #4DABFF; box-shadow: 0 0 0 4px rgba(77,171,255,.18), 0 0 14px rgba(77,171,255,.6); }
+.t-dot.finalizada { background: #00D68F; }
+
+.med-card {
+  background: linear-gradient(180deg, #16241F, #111B18);
+  border: 1px solid #1E3A32;
+  border-radius: 14px;
+}
+
+.pill {
+  font-size: 12px; font-weight: 800; padding: 5px 10px; border-radius: 999px;
+  border: 1px solid #1E3A32; text-transform: capitalize;
+}
+.pill.pendiente { color: #FFC94D; background: rgba(255,201,77,.12); border-color: rgba(255,201,77,.4); }
+.pill.en_camino { color: #4DABFF; background: rgba(77,171,255,.12); border-color: rgba(77,171,255,.4); }
+.pill.finalizada { color: #00D68F; background: rgba(0,214,143,.12); border-color: rgba(0,214,143,.4); }
+
+.avatar-sl {
+  width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #06110D; background: linear-gradient(135deg, #00D68F, #00A56C);
+}
+
+/* Stepper detalle */
+.stepper { display: flex; gap: 6px; margin: 14px 0; }
+.step { flex: 1; text-align: center; font-size: 12px; color: #9AB8AD; }
+.step .bar { height: 6px; border-radius: 99px; background: #1E3A32; margin-bottom: 6px; }
+.step.done { color: #E6F4EF; font-weight: 800; }
+.step.done .bar { background: linear-gradient(90deg, #00D68F, #00A56C); box-shadow: 0 0 12px rgba(0,214,143,.5); }
+.step.now .bar { background: #4DABFF; box-shadow: 0 0 12px rgba(77,171,255,.5); }
+.step.now { color: #fff; font-weight: 800; }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.stat { text-align: center; padding: 14px 8px; }
+.stat b { font-size: 22px; display: block; color: #00D68F; }
+.stat span { font-size: 12px; color: #9AB8AD; }

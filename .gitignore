@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+dist-ssr/
+
+# Logs
+*.log
+*.err
+logs/
+
+# Sistema y editores
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.local
+
+# Testing
+coverage/
