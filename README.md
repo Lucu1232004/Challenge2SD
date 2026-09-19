@@ -1,7 +1,5 @@
 # Parcial 1 - MediClinic
 
-Hola, soy **Samuel Patiño Lucumi**. Este es mi parcial de Desarrollo de Plataformas Móviles.
-
 Hice dos apps para la clínica MediClinic, las dos guardan todo en `localStorage` (sin backend).
 
 ## Qué hay aquí
