@@ -8,12 +8,12 @@ Aplicación de contactos construida en **React + Vite** para el **Challenge 01**
 
 ## ¿Qué incluye el Challenge 02?
 
-- ✅ Imagen agregada al componente padre (`App.jsx`)
-- ✅ Manifest PWA (`public/manifest.webmanifest`) conectado en `index.html`
-- ✅ Ícono personalizado (`public/icons/`) generado a partir de la imagen del proyecto
-- ✅ Service Worker (`public/service-worker.js`) con **estrategia híbrida**
-- ✅ Service Worker registrado en `main.jsx`
-- ✅ Publicada en **Netlify** (HTTPS)
+- Imagen agregada al componente padre (`App.jsx`)
+- Manifest PWA (`public/manifest.webmanifest`) conectado en `index.html`
+- Ícono personalizado (`public/icons/`) generado a partir de la imagen del proyecto
+- Service Worker (`public/service-worker.js`) con **estrategia híbrida**
+- Service Worker registrado en `main.jsx`
+- Publicada en **Netlify** (HTTPS)
 
 ### Estrategia híbrida del Service Worker
 
