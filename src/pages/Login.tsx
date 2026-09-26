@@ -61,6 +61,9 @@ const Login: React.FC = () => {
 
           <h2 className="login-title">¡Bienvenido de nuevo!</h2>
           <p className="login-subtitle">Ingresa tus datos para entrar a tu agenda</p>
+          <IonText color="medium">
+            <p className="login-subtitle">Demo Challenge 04: <b>user@mail.com</b> / <b>123</b></p>
+          </IonText>
 
           <IonList className="login-form">
             <IonItem>
@@ -68,7 +71,7 @@ const Login: React.FC = () => {
               <IonInput
                 type="email"
                 value={email}
-                placeholder="ejemplo@correo.com"
+                placeholder="user@mail.com"
                 onIonChange={(e) => setEmail(e.detail.value || '')}
               />
             </IonItem>
@@ -78,7 +81,7 @@ const Login: React.FC = () => {
               <IonInput
                 type="password"
                 value={password}
-                placeholder="Escribe tu contraseña"
+                placeholder="123"
                 onIonChange={(e) => setPassword(e.detail.value || '')}
               />
             </IonItem>
