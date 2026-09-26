@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -8,7 +8,6 @@ import {
   IonList,
   IonText,
   IonIcon,
-  IonBadge,
   IonAlert,
   IonLoading,
 } from '@ionic/react';
@@ -22,16 +21,15 @@ const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [showAlert, setShowAlert] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Simular carga inicial
-  useState(() => {
-    setLoading(true);
+  // Simular carga inicial (igual que Challenge 01 / Practice 01)
+  useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 800);
+    }, 1500);
     return () => clearTimeout(timer);
-  });
+  }, []);
 
   const handleAddTask = (title: string, description: string) => {
     const newTask: Task = {
