@@ -1,5 +1,5 @@
 {
-  "name": "mi-espacio",
+  "name": "sensores",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -14,16 +14,19 @@
   "dependencies": {
     "@capacitor/android": "8.5.0",
     "@capacitor/app": "8.1.1",
+    "@capacitor/camera": "^8.2.6",
     "@capacitor/core": "8.5.0",
+    "@capacitor/device": "^8.0.3",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/geolocation": "^8.2.4",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.5",
-    "@capacitor/network": "^8.0.1",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@capacitor/motion": "^8.0.1",
+    "@capacitor/push-notifications": "^8.1.3",
     "@capacitor/status-bar": "8.0.3",
     "@ionic/react": "^9.0.0",
     "@ionic/react-router": "^9.0.0",
-    "dexie": "^4.4.7",
-    "dexie-react-hooks": "^4.4.0",
-    "firebase": "^12.19.0",
     "ionicons": "^8.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -53,5 +56,5 @@
     "vite": "^8.0.0",
     "vitest": "^4.0.0"
   },
-  "description": "Contactos, tareas y frutas con Firebase y Dexie para el Challenge 06"
+  "description": "App de sensores con Capacitor para el Challenge 07"
 }

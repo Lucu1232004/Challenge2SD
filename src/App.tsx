@@ -1,22 +1,16 @@
-// Router principal: login, registro y las tres secciones privadas.
-import { ReactNode } from 'react';
-import { Navigate, Route } from 'react-router-dom';
-import {
-  IonApp,
-  IonRouterOutlet,
-  IonLoading,
-  IonPage,
-  IonContent,
-  setupIonicReact,
-} from '@ionic/react';
+// Router principal de la app de sensores.
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { NetworkProvider } from './contexts/NetworkContext';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Contacts from './pages/Contacts';
-import Tasks from './pages/Tasks';
-import Fruits from './pages/Fruits';
+import { Navigate, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import GeolocationPage from './pages/GeolocationPage';
+import CameraPage from './pages/CameraPage';
+import MotionPage from './pages/MotionPage';
+import DevicePage from './pages/DevicePage';
+import HapticsPage from './pages/HapticsPage';
+import FilesystemPage from './pages/FilesystemPage';
+import LocalNotificationsPage from './pages/LocalNotificationsPage';
+import PushNotificationsPage from './pages/PushNotificationsPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -42,69 +36,22 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-// Pantalla que se muestra mientras Firebase restaura la sesión
-const LoadingScreen: React.FC = () => (
-  <IonPage>
-    <IonContent className="ion-padding">
-      <IonLoading isOpen={true} message="Cargando..." />
-    </IonContent>
-  </IonPage>
-);
-
-// Envuelve una página y solo la muestra si hay sesión iniciada
-const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
-
-  if (loading) return <LoadingScreen />;
-  if (!user) return <Navigate to="/login" replace />;
-  return <>{children}</>;
-};
-
-// Redirige según el estado de la sesión al entrar a la raíz
-const RootRedirect: React.FC = () => {
-  const { user, loading } = useAuth();
-
-  if (loading) return <LoadingScreen />;
-  return <Navigate to={user ? '/app/contacts' : '/login'} replace />;
-};
-
 const App: React.FC = () => (
   <IonApp>
-    <AuthProvider>
-      <NetworkProvider>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route
-              path="/app/contacts"
-              element={
-                <ProtectedRoute>
-                  <Contacts />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/app/tasks"
-              element={
-                <ProtectedRoute>
-                  <Tasks />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/app/fruits"
-              element={
-                <ProtectedRoute>
-                  <Fruits />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/" element={<RootRedirect />} />
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </NetworkProvider>
-    </AuthProvider>
+    <IonReactRouter>
+      <IonRouterOutlet>
+        <Route path="/home" element={<Home />} />
+        <Route path="/sensors/geolocation" element={<GeolocationPage />} />
+        <Route path="/sensors/camera" element={<CameraPage />} />
+        <Route path="/sensors/motion" element={<MotionPage />} />
+        <Route path="/sensors/device" element={<DevicePage />} />
+        <Route path="/sensors/haptics" element={<HapticsPage />} />
+        <Route path="/sensors/filesystem" element={<FilesystemPage />} />
+        <Route path="/sensors/notifications" element={<LocalNotificationsPage />} />
+        <Route path="/sensors/push" element={<PushNotificationsPage />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
+      </IonRouterOutlet>
+    </IonReactRouter>
   </IonApp>
 );
 
