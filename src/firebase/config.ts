@@ -1,11 +1,14 @@
-// Configuración de Firebase para la app de tareas (Challenge 05).
-// Los datos salen de la consola de Firebase: Configuración del proyecto > Tus apps.
+// Configuración de Firebase para la app del Challenge 06.
+// Aquí se inicializan Authentication, Firestore y Realtime Database.
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { initializeFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyC99WWRxlEdMnfdUEzTazoMbGZnahvx020',
   authDomain: 'dessarrollosft.firebaseapp.com',
+  databaseURL: 'https://dessarrollosft-default-rtdb.firebaseio.com',
   projectId: 'dessarrollosft',
   storageBucket: 'dessarrollosft.firebasestorage.app',
   messagingSenderId: '886636940729',
@@ -13,6 +16,16 @@ const firebaseConfig = {
   measurementId: 'G-P12LVKFMZM',
 };
 
-// Se inicializa Firebase una sola vez y se exporta la instancia de auth
 const app = initializeApp(firebaseConfig);
+
+// Authentication: usuarios reales con correo y contraseña
 export const auth = getAuth(app);
+
+// Firestore: contactos.
+// Se fuerza el sondeo largo porque algunos proxies bloquean WebChannel.
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+});
+
+// Realtime Database: tareas en tiempo real
+export const realtimeDb = getDatabase(app);

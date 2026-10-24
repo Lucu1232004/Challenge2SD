@@ -37,7 +37,7 @@ const Register: React.FC = () => {
     setLoading(true);
     try {
       await register(email.trim(), password.trim());
-      navigate('/tasks', { replace: true });
+      navigate('/app/contacts', { replace: true });
     } catch (err) {
       setError(getFirebaseErrorMessage(err));
     } finally {
@@ -55,8 +55,8 @@ const Register: React.FC = () => {
 
       <IonContent className="ion-padding">
         <div className="auth-container">
-          <h2 className="auth-title">Mi Gestor de Tareas</h2>
-          <p className="auth-subtitle">Crea tu cuenta para empezar a organizar tus tareas.</p>
+          <h2 className="auth-title">Mi Espacio</h2>
+          <p className="auth-subtitle">Crea tu cuenta para organizar tu información.</p>
 
           <IonItem>
             <IonLabel position="stacked">Correo electrónico</IonLabel>
@@ -64,7 +64,7 @@ const Register: React.FC = () => {
               type="email"
               value={email}
               placeholder="tucorreo@ejemplo.com"
-              onIonChange={(e) => setEmail(e.detail.value || '')}
+              onIonInput={(e) => setEmail(e.detail.value || '')}
             />
           </IonItem>
 
@@ -74,7 +74,7 @@ const Register: React.FC = () => {
               type="password"
               value={password}
               placeholder="Mínimo 6 caracteres"
-              onIonChange={(e) => setPassword(e.detail.value || '')}
+              onIonInput={(e) => setPassword(e.detail.value || '')}
             />
           </IonItem>
 
@@ -84,7 +84,7 @@ const Register: React.FC = () => {
               type="password"
               value={confirm}
               placeholder="Repite tu contraseña"
-              onIonChange={(e) => setConfirm(e.detail.value || '')}
+              onIonInput={(e) => setConfirm(e.detail.value || '')}
             />
           </IonItem>
 

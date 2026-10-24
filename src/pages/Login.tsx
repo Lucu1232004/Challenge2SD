@@ -32,7 +32,7 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       await login(email.trim(), password.trim());
-      navigate('/tasks', { replace: true });
+      navigate('/app/contacts', { replace: true });
     } catch (err) {
       setError(getFirebaseErrorMessage(err));
     } finally {
@@ -50,8 +50,8 @@ const Login: React.FC = () => {
 
       <IonContent className="ion-padding">
         <div className="auth-container">
-          <h2 className="auth-title">Mi Gestor de Tareas</h2>
-          <p className="auth-subtitle">Ingresa con tu correo para ver tus tareas.</p>
+          <h2 className="auth-title">Mi Espacio</h2>
+          <p className="auth-subtitle">Ingresa para ver tus contactos, tareas y frutas.</p>
 
           <IonItem>
             <IonLabel position="stacked">Correo electrónico</IonLabel>
@@ -59,7 +59,7 @@ const Login: React.FC = () => {
               type="email"
               value={email}
               placeholder="tucorreo@ejemplo.com"
-              onIonChange={(e) => setEmail(e.detail.value || '')}
+              onIonInput={(e) => setEmail(e.detail.value || '')}
             />
           </IonItem>
 
@@ -69,7 +69,7 @@ const Login: React.FC = () => {
               type="password"
               value={password}
               placeholder="Tu contraseña"
-              onIonChange={(e) => setPassword(e.detail.value || '')}
+              onIonInput={(e) => setPassword(e.detail.value || '')}
             />
           </IonItem>
 

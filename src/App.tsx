@@ -1,16 +1,22 @@
-// Router principal: define las páginas de la app y protege las rutas
-// que solo pueden verse con sesión iniciada.
+// Router principal: login, registro y las tres secciones privadas.
 import { ReactNode } from 'react';
 import { Navigate, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, IonLoading, IonPage, IonContent, setupIonicReact } from '@ionic/react';
+import {
+  IonApp,
+  IonRouterOutlet,
+  IonLoading,
+  IonPage,
+  IonContent,
+  setupIonicReact,
+} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { TasksProvider } from './contexts/TasksContext';
+import { NetworkProvider } from './contexts/NetworkContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Contacts from './pages/Contacts';
 import Tasks from './pages/Tasks';
-import TaskFormPage from './pages/TaskFormPage';
-import TaskDetail from './pages/TaskDetail';
+import Fruits from './pages/Fruits';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -20,7 +26,7 @@ import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 import '@ionic/react/css/padding.css';
 import '@ionic/react/css/float-elements.css';
 import '@ionic/react/css/text-alignment.css';
@@ -59,19 +65,27 @@ const RootRedirect: React.FC = () => {
   const { user, loading } = useAuth();
 
   if (loading) return <LoadingScreen />;
-  return <Navigate to={user ? '/tasks' : '/login'} replace />;
+  return <Navigate to={user ? '/app/contacts' : '/login'} replace />;
 };
 
 const App: React.FC = () => (
   <IonApp>
     <AuthProvider>
-      <TasksProvider>
+      <NetworkProvider>
         <IonReactRouter>
           <IonRouterOutlet>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
-              path="/tasks"
+              path="/app/contacts"
+              element={
+                <ProtectedRoute>
+                  <Contacts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/tasks"
               element={
                 <ProtectedRoute>
                   <Tasks />
@@ -79,33 +93,17 @@ const App: React.FC = () => (
               }
             />
             <Route
-              path="/tasks/new"
+              path="/app/fruits"
               element={
                 <ProtectedRoute>
-                  <TaskFormPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/tasks/edit/:id"
-              element={
-                <ProtectedRoute>
-                  <TaskFormPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/tasks/:id"
-              element={
-                <ProtectedRoute>
-                  <TaskDetail />
+                  <Fruits />
                 </ProtectedRoute>
               }
             />
             <Route path="/" element={<RootRedirect />} />
           </IonRouterOutlet>
         </IonReactRouter>
-      </TasksProvider>
+      </NetworkProvider>
     </AuthProvider>
   </IonApp>
 );

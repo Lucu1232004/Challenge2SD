@@ -1,5 +1,5 @@
 {
-  "name": "gestor-tareas",
+  "name": "mi-espacio",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -17,9 +17,12 @@
     "@capacitor/core": "8.5.0",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.5",
+    "@capacitor/network": "^8.0.1",
     "@capacitor/status-bar": "8.0.3",
     "@ionic/react": "^9.0.0",
     "@ionic/react-router": "^9.0.0",
+    "dexie": "^4.4.7",
+    "dexie-react-hooks": "^4.4.0",
     "firebase": "^12.19.0",
     "ionicons": "^8.1.0",
     "react": "19.0.0",
@@ -50,5 +53,5 @@
     "vite": "^8.0.0",
     "vitest": "^4.0.0"
   },
-  "description": "Gestor de tareas con Firebase para el Challenge 05"
+  "description": "Contactos, tareas y frutas con Firebase y Dexie para el Challenge 06"
 }
