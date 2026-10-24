@@ -1,6 +1,6 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "Gestor de Tareas",
+  "name": "Gestor de Tareas",
   "icons": [
     {
       "src": "assets/icon/favicon.png",

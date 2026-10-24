@@ -1,4 +1,4 @@
-// Datos y tipos para el Task Manager (Challenge 03)
+// Datos y tipos para el gestor de tareas (Challenge 05)
 
 export interface Task {
   id: number;
@@ -25,7 +25,7 @@ export const initialTasks: Task[] = [
   },
   {
     id: 3,
-    title: 'Comprar groceries',
+    title: 'Hacer mercado',
     description: 'Leche, pan, huevos y frutas',
     completed: false,
     createdAt: '2026-09-03',

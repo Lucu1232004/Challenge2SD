@@ -1,5 +1,5 @@
 {
-  "name": "contactos",
+  "name": "gestor-tareas",
   "integrations": {
     "capacitor": {}
   },

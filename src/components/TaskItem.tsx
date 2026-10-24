@@ -7,14 +7,19 @@ interface TaskItemProps {
   task: Task;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
+  onOpen: (id: number) => void;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, onOpen }) => {
   return (
-    <IonItem className={`task-item ${task.completed ? 'task-completed' : ''}`}>
+    <IonItem
+      className={`task-item ${task.completed ? 'task-completed' : ''}`}
+      onClick={() => onOpen(task.id)}
+    >
       <IonCheckbox
         slot="start"
         checked={task.completed}
+        onClick={(event) => event.stopPropagation()}
         onIonChange={() => onToggle(task.id)}
       />
       <IonLabel>
@@ -31,7 +36,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
         slot="end"
         fill="clear"
         color="danger"
-        onClick={() => onDelete(task.id)}
+        onClick={(event) => {
+          event.stopPropagation();
+          onDelete(task.id);
+        }}
       >
         <IonIcon icon={trashOutline} />
       </IonButton>

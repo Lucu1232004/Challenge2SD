@@ -1,56 +1,40 @@
+// Página principal: lista las tareas del usuario con sus estadísticas.
+// Los datos vienen del TasksContext y la sesión del AuthContext.
 import { useState } from 'react';
 import {
-  IonContent,
-  IonHeader,
   IonPage,
-  IonTitle,
+  IonHeader,
   IonToolbar,
+  IonTitle,
+  IonContent,
   IonList,
   IonText,
   IonIcon,
   IonBadge,
   IonAlert,
-  IonLoading,
+  IonFab,
+  IonFabButton,
+  IonButton,
 } from '@ionic/react';
-import { listOutline, checkmarkCircleOutline, timeOutline } from 'ionicons/icons';
+import {
+  listOutline,
+  checkmarkCircleOutline,
+  timeOutline,
+  addOutline,
+  logOutOutline,
+} from 'ionicons/icons';
+import { useNavigate } from 'react-router-dom';
 import TaskItem from '../components/TaskItem';
-import TaskForm from '../components/TaskForm';
-import { Task, initialTasks } from '../data/tasks';
-import './Home.css';
+import { useTasks } from '../contexts/TasksContext';
+import { useAuth } from '../contexts/AuthContext';
+import './Tasks.css';
 
-const Home: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+const Tasks: React.FC = () => {
+  const { tasks, toggleTask, deleteTask } = useTasks();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  // Simular carga inicial
-  useState(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  });
-
-  const handleAddTask = (title: string, description: string) => {
-    const newTask: Task = {
-      id: Date.now(),
-      title,
-      description,
-      completed: false,
-      createdAt: new Date().toISOString().split('T')[0],
-    };
-    setTasks((prev) => [newTask, ...prev]);
-  };
-
-  const handleToggleTask = (id: number) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
 
   const handleDeleteClick = (id: number) => {
     setTaskToDelete(id);
@@ -59,40 +43,34 @@ const Home: React.FC = () => {
 
   const confirmDelete = () => {
     if (taskToDelete !== null) {
-      setTasks((prev) => prev.filter((task) => task.id !== taskToDelete));
+      deleteTask(taskToDelete);
       setTaskToDelete(null);
     }
     setShowAlert(false);
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
   const completedCount = tasks.filter((t) => t.completed).length;
   const pendingCount = tasks.filter((t) => !t.completed).length;
-
-  if (loading) {
-    return (
-      <IonPage>
-        <IonHeader>
-          <IonToolbar color="primary">
-            <IonTitle>Mi Gestor de Tareas</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <IonLoading isOpen={true} message="Cargando tus tareas..." />
-        </IonContent>
-      </IonPage>
-    );
-  }
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
           <IonTitle>Mi Gestor de Tareas</IonTitle>
+          <IonButton slot="end" fill="clear" color="light" onClick={handleLogout}>
+            <IonIcon slot="start" icon={logOutOutline} />
+            Salir
+          </IonButton>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
-        {/* Estadisticas */}
+        {/* Estadísticas */}
         <div className="stats-container">
           <div className="stat-box">
             <IonIcon icon={listOutline} color="primary" />
@@ -111,16 +89,13 @@ const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Formulario para agregar */}
-        <TaskForm onAdd={handleAddTask} />
-
         {/* Lista de tareas */}
         {tasks.length === 0 ? (
           <div className="empty-state">
             <IonIcon icon={listOutline} size="large" color="medium" />
             <IonText color="medium">
-              <p>No tienes tareas todavia.</p>
-              <p>¡Agrega tu primera tarea arriba!</p>
+              <p>No tienes tareas todavía.</p>
+              <p>Toca el botón + para agregar tu primera tarea.</p>
             </IonText>
           </div>
         ) : (
@@ -129,14 +104,22 @@ const Home: React.FC = () => {
               <TaskItem
                 key={task.id}
                 task={task}
-                onToggle={handleToggleTask}
+                onToggle={toggleTask}
                 onDelete={handleDeleteClick}
+                onOpen={(id) => navigate(`/tasks/${id}`)}
               />
             ))}
           </IonList>
         )}
 
-        {/* Alerta de confirmacion */}
+        {/* Botón flotante para crear tarea */}
+        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonFabButton onClick={() => navigate('/tasks/new')}>
+            <IonIcon icon={addOutline} />
+          </IonFabButton>
+        </IonFab>
+
+        {/* Alerta de confirmación */}
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={() => setShowAlert(false)}
@@ -160,4 +143,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Tasks;
