@@ -1,268 +1,130 @@
-# Challenge 03 - App de Contactos en Ionic (Practice 01)
+# Challenge 05 - Gestor de Tareas con Firebase
 
-## Que es esto?
+App móvil hecha con Ionic y React que toma el gestor de tareas del Challenge 03 y le agrega autenticación real con Firebase, contextos y rutas protegidas.
 
-Este es el **Challenge 03** de la materia Desarrollo de Software para Plataformas Moviles. Es la migracion de mi app de contactos (hecha en React puro para los Challenges 01 y 02) a **Ionic**, un framework que me permite crear apps moviles usando tecnologias web como HTML, CSS y JavaScript/TypeScript.
+## Qué hace
 
-La gran diferencia con la PWA del Challenge 02 es que esta app se compila como una **app nativa de Android** usando **Capacitor**. Eso significa que se instala directamente en el celular como cualquier otra app de la Play Store, con su propio icono, acceso nativo al hardware y mejor rendimiento.
+- Registro con correo y contraseña.
+- Inicio y cierre de sesión contra Firebase Authentication.
+- Sesión persistente: si el usuario ya entró, la app lo recuerda al abrirla.
+- Lista de tareas con estadísticas de total, pendientes y completadas.
+- Crear, editar, ver el detalle, completar y eliminar tareas.
+- Rutas privadas: sin sesión no se puede entrar a las tareas.
 
----
+Las tareas viven en memoria durante la sesión. Al recargar la página vuelven las tareas de ejemplo. La persistencia en base de datos llega en el Challenge 06.
 
-## Por que Ionic?
+## Requisitos del challenge
 
-En las clases anteriores tenia una app web (Challenge 01) que luego converti en PWA (Challenge 02). La PWA funciona bien, pero tiene limitaciones:
-- No puede acceder a todas las funciones del celular (camara, bluetooth, sensores, etc.)
-- En iOS tiene restricciones (Safari no permite PWAs tan abiertamente)
-- No se siente 100% como una app nativa
+El enunciado de la clase 05 pide:
 
-**Ionic resuelve eso**:
-- Usa componentes visuales que parecen nativos (botones, listas, tarjetas, modales)
-- Con Capacitor, se compila a codigo nativo de Android e iOS
-- Puedo usar el mismo codigo web (React) y empaquetarlo como app movil
-- Tiene animaciones de transicion propias de apps moviles
-- Soporta gestos como deslizar para atras (back gesture)
+- Login, registro y logout con Firebase.
+- Rutas para login, registro, lista de tareas, agregar o editar y detalle.
+- Un contexto para manejar los datos de las tareas entre páginas.
+- Otro contexto para manejar el estado de autenticación.
+- Custom hooks para encapsular la lógica de Firebase.
 
----
+Todo eso está implementado en esta rama.
 
-## Que hace la app?
+## Tecnologías
 
-Las funcionalidades son las mismas del Challenge 01, pero ahora con interfaz movil nativa:
+- Ionic 9 con React 19 y TypeScript.
+- Vite 8 para desarrollo y compilación.
+- Capacitor 8 para empaquetar la app en Android.
+- Firebase 12, solo Authentication.
+- React Router 6 para las rutas.
+- Ionicons para los iconos.
 
-1. **Ver lista de contactos**: Abres la app y aparece un loader. Luego se muestran las tarjetas con los contactos en formato movil.
+## Estructura
 
-2. **Agregar contactos**: Tocas el boton flotante rojo con el signo **+** en la esquina inferior derecha. Se abre un **modal** (ventana emergente tipo app movil) donde escribes los datos. Al guardar, el contacto aparece en la lista.
+```text
+src/
+  components/
+    TaskItem.tsx          Tarjeta de una tarea con checkbox y botón eliminar
+  contexts/
+    AuthContext.tsx       Expone usuario, carga y acciones de autenticación
+    TasksContext.tsx      Comparte la lista de tareas entre páginas
+  data/
+    tasks.ts              Tipo Task y tareas de ejemplo
+  firebase/
+    config.ts             Inicialización de Firebase y exportación de auth
+    errors.ts             Traducción de errores de Firebase al español
+  hooks/
+    useFirebaseAuth.ts    Login, registro, logout y restauración de sesión
+  pages/
+    Login.tsx             Formulario de inicio de sesión
+    Register.tsx          Formulario de registro
+    Tasks.tsx             Lista, estadísticas y logout
+    TaskFormPage.tsx      Crear o editar una tarea
+    TaskDetail.tsx        Detalle de una tarea
+  App.tsx                 Rutas, providers y protección de sesión
+  main.tsx                Punto de entrada de React
+```
 
-3. **Eliminar contactos**: Tocas el icono de la basura en cada tarjeta. Aparece una **alerta nativa** de Ionic que te pregunta si estas seguro. Al confirmar, se elimina.
+## Rutas
 
-4. **Contador**: En el header rojo aparece un numero que indica cuantos contactos tienes.
+| Ruta | Acceso | Pantalla |
+|------|--------|----------|
+| `/` | Público | Redirige a `/tasks` o `/login` según la sesión |
+| `/login` | Público | Inicio de sesión |
+| `/register` | Público | Registro |
+| `/tasks` | Privado | Lista de tareas |
+| `/tasks/new` | Privado | Crear tarea |
+| `/tasks/edit/:id` | Privado | Editar tarea |
+| `/tasks/:id` | Privado | Detalle de la tarea |
 
-5. **Estado vacio**: Si borras todos los contactos, aparece un mensaje amigable con un icono grande.
+`ProtectedRoute` revisa el estado de `AuthContext`. Mientras Firebase restaura la sesión muestra un loader. Si no hay usuario, redirige a `/login`.
 
-### Contactos iniciales
+## Autenticación
 
-La app carga 4 contactos de ejemplo con nombre, telefono, edad y ciudad.
+`useFirebaseAuth` es el hook que habla con Firebase. Se suscribe a `onAuthStateChanged` para mantener el usuario actualizado y expone tres acciones: `login`, `register` y `logout`. `AuthContext` envuelve ese hook y lo comparte con toda la app mediante `useAuth`.
 
----
+Los errores de Firebase se traducen en `src/firebase/errors.ts` para que el usuario vea mensajes claros en vez de códigos técnicos.
 
-## Tecnologias usadas
+## Configuración de Firebase
 
-- **Ionic 9**: Framework de UI para apps moviles hibridas.
-- **React 19**: Libreria para construir la interfaz (Ionic funciona con React, Angular o Vue).
-- **TypeScript**: JavaScript con tipos. Ayuda a evitar errores y autocompletar codigo.
-- **Capacitor 8**: Empaqueta el codigo web en una app nativa de Android/iOS.
-- **Vite**: Herramienta de construccion rapida.
-- **Componentes Ionic**: IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonModal, IonFab, IonButton, IonInput, IonItem, IonLabel, IonList, IonBadge, IonAlert, IonLoading, IonIcon.
+1. Crear un proyecto en la consola de Firebase.
+2. Habilitar el proveedor de correo y contraseña en Authentication.
+3. Registrar una app web y copiar el objeto de configuración.
+4. Pegar esos valores en `src/firebase/config.ts`.
+5. Crear usuarios desde la pantalla de registro de la app o desde la consola.
 
----
+La configuración actual apunta al proyecto `dessarrollosft`. La API key es pública, como corresponde a una app web de Firebase. Para un proyecto real conviene moverla a variables de entorno.
 
-## Diferencias con el Challenge 01/02
+## Cómo correrlo
 
-| Aspecto | Challenge 01/02 (React puro) | Challenge 03 (Ionic) |
-|---------|------------------------------|----------------------|
-| Framework | React + Vite | Ionic + React + TypeScript |
-| Archivos | `.jsx` | `.tsx` (TypeScript) |
-| Componentes UI | HTML + CSS manual | Componentes Ionic (`IonCard`, `IonModal`, etc.) |
-| Tipografia | Fuente del sistema | Poppins (fuentes de Google) |
-| Boton agregar | Boton normal | `IonFab` (boton flotante nativo) |
-| Formulario | Form HTML en la misma pagina | `IonModal` (ventana emergente tipo app) |
-| Confirmacion eliminar | `window.confirm()` | `IonAlert` (alerta nativa de Ionic) |
-| Loader | Componente CSS personalizado | `IonLoading` (spinner nativo) |
-| Tarjetas | `div` con CSS | `IonCard` (tarjeta nativa con sombras y bordes) |
-| App movil | Solo PWA (navegador) | App nativa Android via Capacitor |
-
----
-
-## Como correrlo localmente
-
-### Paso 1: Clonar y cambiar a la rama
+Requisitos: Node 20 o superior y npm.
 
 ```bash
 git clone https://github.com/Lucu1232004/Challenge2SD.git
 cd Challenge2SD
-git checkout challenge-03
-```
-
-### Paso 2: Instalar dependencias
-
-```bash
+git checkout challenge-05
 npm install
-```
-
-### Paso 3: Correr en el navegador (modo desarrollo)
-
-```bash
-ionic serve
-```
-
-O tambien:
-
-```bash
 npm run dev
 ```
 
-Se abrira en `http://localhost:8100`. Se vera como un celular en tu navegador.
+La app queda en `http://localhost:5173`.
 
-### Paso 4: Construir para produccion
-
-```bash
-npm run build
-```
-
-Esto genera la carpeta `dist/` con todo optimizado.
-
----
-
-## Como instalarlo en tu celular Android
-
-### Requisitos previos
-
-1. **Android Studio** instalado y configurado.
-2. **Java 17** instalado (puede ser necesario dependiendo de la version de Gradle).
-3. Tu celular con **modo desarrollador activado**:
-   - Ve a Ajustes > Acerca del telefono
-   - Toca "Numero de compilacion" 7 veces
-   - Ve a Opciones de desarrollador y activa "Depuracion USB"
-4. Conecta tu celular al PC por USB y acepta el permiso de depuracion.
-
-### Paso 1: Compilar la app web
+Para compilar:
 
 ```bash
 npm run build
 ```
 
-### Paso 2: Copiar archivos a Android
-
-```bash
-npx cap copy android
-```
-
-Esto copia la carpeta `dist/` al proyecto de Android.
-
-### Paso 3: Sincronizar plugins de Capacitor
+Para probar en Android:
 
 ```bash
 npx cap sync android
-```
-
-Esto actualiza los plugins nativos que necesita la app.
-
-### Paso 4: Abrir en Android Studio
-
-```bash
 npx cap open android
 ```
 
-O abre Android Studio manualmente y selecciona la carpeta `android/` dentro del proyecto.
+Eso abre el proyecto en Android Studio. Desde ahí se compila y se instala en un emulador o en un teléfono con depuración USB activada.
 
-### Paso 5: Ejecutar en el celular
+## Notas
 
-1. En Android Studio, asegurate de que tu celular aparece seleccionado en la barra superior.
-2. Toca el boton verde de **Run** (triangulo).
-3. Espera a que compile e instale.
-4. La app "contactos" aparecera en tu celular.
+- No hay cuentas de prueba hardcodeadas. Crea una desde la pantalla de registro.
+- El `appId` de Android se mantiene como `io.ionic.starter` para no romper el proyecto existente.
+- El nombre visible de la app es "Gestor de Tareas" y el nombre interno del paquete es `gestor-tareas`.
 
-### Si Android Studio abre otro proyecto
+## Rama
 
-A veces Android Studio abre una app de ejemplo en vez de la tuya. Para arreglarlo:
-
-1. Cierra Android Studio.
-2. Vuelve a abrirlo.
-3. Selecciona **Open** (NO "New Project").
-4. Navega a `C:\Users\Hogar\Desktop\Clase3DS\contactos\android` (o la ruta donde tengas el proyecto).
-5. Espera a que sincronice Gradle.
-6. Dale Run.
-
----
-
-## Estructura del proyecto
-
-```
-contactos/
-├── android/                       # Proyecto Android nativo (generado por Capacitor)
-│   ├── app/
-│   │   ├── src/main/
-│   │   │   ├── assets/public/     # Archivos web compilados (HTML, JS, CSS)
-│   │   │   ├── java/              # Codigo Java nativo
-│   │   │   └── res/               # Recursos (iconos, splash screens, layouts)
-│   │   └── build.gradle           # Configuracion de build de Android
-│   └── ...
-├── src/
-│   ├── components/
-│   │   ├── ContactItem.tsx        # Tarjeta de contacto con avatar rojo
-│   │   └── ContactItem.css        # Estilos del componente
-│   ├── data/
-│   │   └── contacts.ts            # Datos iniciales + tipos + colores de avatares
-│   ├── pages/
-│   │   ├── Home.tsx               # Pagina principal con lista, modal, alertas
-│   │   └── Home.css               # Estilos de la pagina
-│   ├── App.tsx                    # Router y estructura base de la app
-│   ├── main.tsx                   # Punto de entrada
-│   ├── theme/
-│   │   └── variables.css          # Variables de tema de Ionic
-│   └── ...
-├── capacitor.config.ts            # Configuracion de Capacitor
-├── ionic.config.json              # Configuracion de Ionic
-├── index.html                     # HTML principal
-├── package.json
-├── tsconfig.json                  # Configuracion de TypeScript
-├── vite.config.ts                 # Configuracion de Vite
-└── README.md                      # Este archivo
-```
-
----
-
-## Componentes Ionic usados
-
-Estos son los componentes de Ionic que reemplazan el HTML/CSS manual del Challenge 01:
-
-| Componente Ionic | Que reemplaza | Para que sirve |
-|------------------|---------------|----------------|
-| `IonPage` | `div` contenedor | Estructura base de toda pantalla en Ionic |
-| `IonHeader` + `IonToolbar` | `header` manual | Barra superior estilo app movil |
-| `IonTitle` | `h1` manual | Titulo en el header |
-| `IonContent` | `main` o `div` | Area de contenido con scroll nativo |
-| `IonCard` + `IonCardContent` | `div` con borde | Tarjeta visual con sombra y bordes redondeados |
-| `IonModal` | Formulario inline | Ventana emergente tipo app movil |
-| `IonFab` + `IonFabButton` | Boton normal | Boton flotante circular en la esquina |
-| `IonButton` | `button` HTML | Boton con estilos nativos de Ionic |
-| `IonInput` | `input` HTML | Campo de texto con estilos moviles |
-| `IonLabel` | `label` HTML | Etiqueta para inputs |
-| `IonItem` | `div` contenedor | Fila estandar para listas y formularios |
-| `IonList` | `ul` HTML | Lista con estilos nativos |
-| `IonBadge` | `span` con CSS | Burbuja de numero (usado para el contador) |
-| `IonAlert` | `window.confirm()` | Alerta nativa con botones personalizados |
-| `IonLoading` | Spinner CSS manual | Pantalla de carga con spinner nativo |
-| `IonIcon` | `img` o `svg` | Iconos vectoriales (agregar, eliminar, cerrar, etc.) |
-
----
-
-## Que aprendi con este challenge?
-
-- Que es Ionic y como se diferencia de una web normal o una PWA.
-- Como crear un proyecto Ionic con React y TypeScript.
-- La anatomia basica de una app Ionic: `IonApp`, `IonPage`, `IonHeader`, `IonContent`.
-- Como usar componentes Ionic en vez de HTML/CSS manual.
-- La diferencia entre JSX (React puro) y TSX (React + TypeScript).
-- Como funciona Capacitor para empaquetar apps web como apps nativas.
-- Como conectar Android Studio con un proyecto Ionic.
-- Como compilar, copiar y sincronizar archivos para Android.
-- Como activar modo desarrollador en un celular Android.
-- Que las apps Ionic se sienten nativas gracias a las animaciones y gestos de Ionic.
-
----
-
-## Practicas y Challenges completados
-
-| Tipo | Nombre | Descripcion |
-|------|--------|-------------|
-| Challenge 01 | App de Contactos React | React puro con Vite. Listar, agregar, eliminar contactos. |
-| Challenge 02 | PWA | Transformar la app en PWA instalable con Service Worker hibrido. |
-| Practice 01 | Migracion a Ionic | Misma app pero usando componentes Ionic y compilada para Android con Capacitor. |
-
----
-
-## Autor
-
-**Samuel Patiño** - samuel.patino@uao.edu.co
-
-Proyecto desarrollado para la clase de Desarrollo de Software para Plataformas Moviles.
+Esta entrega vive en la rama `challenge-05` del repositorio.
