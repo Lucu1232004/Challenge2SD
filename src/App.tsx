@@ -1,16 +1,23 @@
-// Router principal de la app de sensores.
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
+// Router principal del Parcial 2.
+import { ReactNode } from 'react';
 import { Navigate, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import GeolocationPage from './pages/GeolocationPage';
-import CameraPage from './pages/CameraPage';
-import MotionPage from './pages/MotionPage';
-import DevicePage from './pages/DevicePage';
-import HapticsPage from './pages/HapticsPage';
-import FilesystemPage from './pages/FilesystemPage';
-import LocalNotificationsPage from './pages/LocalNotificationsPage';
-import PushNotificationsPage from './pages/PushNotificationsPage';
+import {
+  IonApp,
+  IonContent,
+  IonLoading,
+  IonPage,
+  IonRouterOutlet,
+  setupIonicReact,
+} from '@ionic/react';
+import { IonReactRouter } from '@ionic/react-router';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import MissionsPage from './pages/MissionsPage';
+import PhotoMissionPage from './pages/PhotoMissionPage';
+import MovementMissionPage from './pages/MovementMissionPage';
+import StillnessMissionPage from './pages/StillnessMissionPage';
+import ResultsPage from './pages/ResultsPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,22 +43,80 @@ import './theme/variables.css';
 
 setupIonicReact();
 
+const LoadingScreen: React.FC = () => (
+  <IonPage>
+    <IonContent className="ion-padding">
+      <IonLoading isOpen={true} message="Cargando..." />
+    </IonContent>
+  </IonPage>
+);
+
+const ProtectedRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <LoadingScreen />;
+  if (!user) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+};
+
+const RootRedirect: React.FC = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <LoadingScreen />;
+  return <Navigate to={user ? '/missions' : '/login'} replace />;
+};
+
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path="/home" element={<Home />} />
-        <Route path="/sensors/geolocation" element={<GeolocationPage />} />
-        <Route path="/sensors/camera" element={<CameraPage />} />
-        <Route path="/sensors/motion" element={<MotionPage />} />
-        <Route path="/sensors/device" element={<DevicePage />} />
-        <Route path="/sensors/haptics" element={<HapticsPage />} />
-        <Route path="/sensors/filesystem" element={<FilesystemPage />} />
-        <Route path="/sensors/notifications" element={<LocalNotificationsPage />} />
-        <Route path="/sensors/push" element={<PushNotificationsPage />} />
-        <Route path="/" element={<Navigate to="/home" replace />} />
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <AuthProvider>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/missions"
+            element={
+              <ProtectedRoute>
+                <MissionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/missions/photo"
+            element={
+              <ProtectedRoute>
+                <PhotoMissionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/missions/movement"
+            element={
+              <ProtectedRoute>
+                <MovementMissionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/missions/stillness"
+            element={
+              <ProtectedRoute>
+                <StillnessMissionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <ProtectedRoute>
+                <ResultsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<RootRedirect />} />
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </AuthProvider>
   </IonApp>
 );
 

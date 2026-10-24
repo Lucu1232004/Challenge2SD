@@ -1,5 +1,5 @@
 {
-  "name": "sensores",
+  "name": "misiones",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -27,6 +27,7 @@
     "@capacitor/status-bar": "8.0.3",
     "@ionic/react": "^9.0.0",
     "@ionic/react-router": "^9.0.0",
+    "firebase": "^13.1.0",
     "ionicons": "^8.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -56,5 +57,5 @@
     "vite": "^8.0.0",
     "vitest": "^4.0.0"
   },
-  "description": "App de sensores con Capacitor para el Challenge 07"
+  "description": "App de misiones y puntos para el Parcial 2"
 }

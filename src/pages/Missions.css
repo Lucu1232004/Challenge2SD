@@ -1,0 +1,310 @@
+/* Estilos compartidos por la app de misiones */
+
+.mission-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+
+.mission-intro {
+  margin-top: 0;
+  color: var(--ion-color-medium);
+}
+
+.mission-error {
+  font-size: 14px;
+}
+
+.mission-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 0;
+  color: var(--ion-color-medium);
+}
+
+.summary-card {
+  margin: 0 0 14px;
+  padding: 16px;
+}
+
+.summary-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.summary-label {
+  display: block;
+  color: var(--ion-color-medium);
+  font-size: 12px;
+}
+
+.summary-points {
+  display: block;
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.summary-right {
+  text-align: right;
+}
+
+.summary-count {
+  display: block;
+  font-size: 22px;
+}
+
+.summary-percent {
+  display: block;
+  margin-top: 6px;
+  color: var(--ion-color-medium);
+  font-size: 12px;
+}
+
+.mission-list {
+  margin-bottom: 14px;
+}
+
+.mission-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+  padding: 14px;
+}
+
+.mission-card-locked {
+  opacity: 0.65;
+}
+
+.mission-card-icon {
+  flex-shrink: 0;
+  font-size: 28px;
+}
+
+.mission-card-text {
+  flex: 1;
+}
+
+.mission-card-text h2 {
+  margin: 0 0 3px;
+  font-size: 16px;
+}
+
+.mission-card-text p {
+  margin: 0 0 6px;
+  color: var(--ion-color-medium);
+  font-size: 13px;
+}
+
+.mission-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mission-card-meta ion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.mission-locked-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.mission-card-arrow {
+  color: var(--ion-color-medium);
+}
+
+.mission-note {
+  display: block;
+  margin-top: 12px;
+  color: var(--ion-color-medium);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.mission-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(45, 211, 111, 0.12);
+  color: var(--ion-color-success-shade);
+  font-weight: 600;
+}
+
+.mission-success ion-icon {
+  font-size: 22px;
+}
+
+.mission-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.mission-actions ion-button {
+  margin: 0;
+}
+
+.mission-panel {
+  margin: 12px 0;
+  padding: 14px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.photo-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.photo-preview {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+.distance-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 16px 0;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--ion-color-light);
+  text-align: center;
+}
+
+.distance-icon {
+  font-size: 30px;
+  color: var(--ion-color-primary);
+}
+
+.distance-card strong {
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.distance-card span {
+  color: var(--ion-color-medium);
+  font-size: 12px;
+}
+
+.locked-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.locked-icon {
+  font-size: 56px;
+  color: var(--ion-color-medium);
+}
+
+.locked-panel h2 {
+  margin: 0;
+}
+
+.locked-panel p {
+  margin: 0 0 8px;
+  color: var(--ion-color-medium);
+}
+
+.countdown-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 16px 0;
+  padding: 22px;
+  border-radius: 16px;
+  background: var(--ion-color-light);
+}
+
+.countdown-icon {
+  font-size: 34px;
+  color: var(--ion-color-primary);
+}
+
+.countdown-card strong {
+  font-size: 56px;
+  line-height: 1;
+}
+
+.countdown-card span {
+  color: var(--ion-color-medium);
+}
+
+.results-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 8px 0 16px;
+  padding: 22px;
+  border-radius: 16px;
+  background: var(--ion-color-light);
+}
+
+.results-icon {
+  font-size: 40px;
+  color: var(--ion-color-primary);
+}
+
+.results-summary strong {
+  font-size: 42px;
+  line-height: 1.1;
+}
+
+.results-summary span {
+  color: var(--ion-color-medium);
+}
+
+.results-state {
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+
+.results-title {
+  margin: 20px 0 4px;
+  font-size: 18px;
+}
+
+.ranking-list {
+  background: transparent;
+}
+
+.ranking-current {
+  --background: rgba(45, 211, 111, 0.12);
+  border-radius: 10px;
+}
+
+.ranking-list ion-item {
+  margin-bottom: 6px;
+  border-radius: 10px;
+}
