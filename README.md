@@ -1,27 +1,26 @@
-# Challenge 06 - Mi Espacio
+# Challenge 07 - Sensores
 
-App móvil en Ionic y React que reúne tres formas de guardar datos: contactos en Firestore, tareas en Realtime Database y frutas en una base local con Dexie. Incluye autenticación real con Firebase y bloquea las acciones que necesitan internet cuando el dispositivo está sin conexión.
+App móvil en Ionic y React con una pantalla principal y una página por cada sensor o función nativa del dispositivo. Usa los plugins de Capacitor para cámara, ubicación, movimiento, información del dispositivo, hápticos, archivos y notificaciones.
 
 ## Qué hace
 
-- Registro, inicio y cierre de sesión con correo y contraseña.
-- Sesión persistente: si el usuario ya entró, la app lo recuerda.
-- Contactos en Firestore: crear, listar, editar y eliminar.
-- Tareas en Firebase Realtime Database: crear, listar, completar, editar y eliminar.
-- Frutas en Dexie: crear, listar, editar y eliminar sin depender de internet.
-- Barra inferior para cambiar entre Contactos, Tareas y Frutas.
-- Indicador de red en el header: "En línea" o "Sin red".
-- Con el dispositivo sin conexión, los botones de contactos y tareas se deshabilitan. La sección de frutas sigue funcionando porque usa la base local.
+- Home con ocho tarjetas, una por sensor.
+- Geolocalización: posición actual y seguimiento continuo.
+- Cámara: tomar una foto o elegir una de la galería.
+- Movimiento: acelerómetro y orientación.
+- Dispositivo: modelo, sistema operativo, batería e identificador.
+- Hápticos: impactos, notificaciones táctiles y vibración.
+- Archivos: guardar, leer y eliminar un archivo de texto.
+- Notificaciones locales: permiso, programación y lista de pendientes.
+- Notificaciones push: registro del dispositivo y token de Firebase Cloud Messaging.
 
 ## Requisitos del challenge
 
-El enunciado de la clase 06 pide:
+El enunciado de la clase 07 pide:
 
-1. Una app nueva en Ionic con login real y rutas.
-2. Contactos en Firebase.
-3. Tareas en Firebase Realtime Database.
-4. Frutas en Dexie como función nueva.
-5. Validar la conexión de red y habilitar o deshabilitar las acciones de contactos y tareas según el estado.
+1. Crear una app vacía en Ionic.
+2. Usar una Home con un botón por sensor.
+3. Crear una página nueva por cada sensor y aplicar la API correspondiente.
 
 Todo eso está implementado en esta rama.
 
@@ -30,10 +29,15 @@ Todo eso está implementado en esta rama.
 - Ionic 9 con React 19 y TypeScript.
 - Vite 8 para desarrollo y compilación.
 - Capacitor 8 para empaquetar en Android.
-- Firebase 12: Authentication, Firestore y Realtime Database.
-- Dexie 4 y dexie-react-hooks para la base local.
-- @capacitor/network para detectar el estado de la conexión.
-- React Router 6 para las rutas.
+- Plugins de Capacitor:
+  - `@capacitor/geolocation`
+  - `@capacitor/camera`
+  - `@capacitor/motion`
+  - `@capacitor/device`
+  - `@capacitor/haptics`
+  - `@capacitor/filesystem`
+  - `@capacitor/local-notifications`
+  - `@capacitor/push-notifications`
 - Ionicons para los iconos.
 
 ## Estructura
@@ -41,120 +45,60 @@ Todo eso está implementado en esta rama.
 ```text
 src/
   components/
-    AppHeader.tsx        Header con el título, estado de red y logout
-    AppTabBar.tsx        Barra inferior de navegación
-  contexts/
-    AuthContext.tsx      Usuario y acciones de autenticación
-    NetworkContext.tsx   Estado de conexión compartido
-  db/
-    database.ts          Base Dexie con la tabla de frutas
+    SensorHeader.tsx      Header con botón de volver
+    SensorPage.tsx        Envoltorio común de las páginas
   hooks/
-    useFirebaseAuth.ts   Login, registro, logout y restauración de sesión
-    useCollection.ts     CRUD de Firestore con filtros
-    useRealTimeCollection.ts  CRUD y escucha en Realtime Database
-    useDexie.ts          CRUD de frutas con useLiveQuery
-    useNetwork.ts        Estado de red con Capacitor
+    useGeolocation.ts     Posición y seguimiento
+    useCamera.ts          Foto o galería
+    useAccelerometer.ts   Acelerómetro y orientación
+    useDevice.ts          Información del dispositivo y batería
+    useHaptics.ts         Impactos, notificaciones y vibración
+    useFilesystem.ts      Guardar, leer y borrar archivos
+    useLocalNotifications.ts  Permisos y programación
+    usePushNotifications.ts   Registro y token de push
   pages/
-    Login.tsx            Inicio de sesión
-    Register.tsx         Registro
-    Contacts.tsx         Contactos en Firestore
-    Tasks.tsx            Tareas en Realtime Database
-    Fruits.tsx           Frutas en Dexie
-  firebase/
-    config.ts            Inicialización de Firebase
-    errors.ts            Errores de Firebase traducidos al español
-  types.ts               Tipos Contact, Task y Fruit
-  App.tsx                Rutas y providers
-  main.tsx               Punto de entrada
+    Home.tsx              Tarjetas de sensores
+    GeolocationPage.tsx
+    CameraPage.tsx
+    MotionPage.tsx
+    DevicePage.tsx
+    HapticsPage.tsx
+    FilesystemPage.tsx
+    LocalNotificationsPage.tsx
+    PushNotificationsPage.tsx
+    Sensors.css          Estilos compartidos
+  App.tsx                 Rutas de la app
+  main.tsx                Punto de entrada
 ```
 
 ## Rutas
 
-| Ruta | Acceso | Pantalla |
-|------|--------|----------|
-| `/` | Público | Redirige a `/app/contacts` o `/login` según la sesión |
-| `/login` | Público | Inicio de sesión |
-| `/register` | Público | Registro |
-| `/app/contacts` | Privado | Contactos |
-| `/app/tasks` | Privado | Tareas |
-| `/app/fruits` | Privado | Frutas |
+| Ruta | Pantalla |
+|------|----------|
+| `/home` | Inicio con las ocho tarjetas |
+| `/sensors/geolocation` | Geolocalización |
+| `/sensors/camera` | Cámara |
+| `/sensors/motion` | Movimiento |
+| `/sensors/device` | Dispositivo |
+| `/sensors/haptics` | Hápticos |
+| `/sensors/filesystem` | Archivos |
+| `/sensors/notifications` | Notificaciones locales |
+| `/sensors/push` | Notificaciones push |
 
-`ProtectedRoute` revisa el estado de `AuthContext`. Mientras Firebase restaura la sesión muestra un loader. Si no hay usuario, redirige a `/login`.
+La raíz `/` redirige a `/home`.
 
-## Modelo de datos
+## Permisos de Android
 
-**Contactos** en la colección `contacts` de Firestore:
+El `AndroidManifest.xml` incluye:
 
-```text
-{
-  name: string,
-  phone: string,
-  age: number,
-  city: string,
-  ownerId: string,
-  createdAt: string
-}
-```
+- Cámara.
+- Ubicación precisa y aproximada.
+- Vibración.
+- Notificaciones en Android 13 o superior.
+- Lectura de imágenes de la galería.
+- Lectura y escritura de almacenamiento para versiones antiguas de Android.
 
-Cada contacto se filtra por `ownerId` para que cada usuario vea solo los suyos.
-
-**Tareas** en Realtime Database, dentro de `tasks/{uid}`:
-
-```text
-{
-  title: string,
-  description: string,
-  completed: boolean,
-  createdAt: string
-}
-```
-
-**Frutas** en la tabla `fruits` de Dexie:
-
-```text
-{
-  id?: number,
-  name: string,
-  price: number,
-  stock: number
-}
-```
-
-## Cómo funcionan los hooks
-
-`useCollection` consulta una colección de Firestore con `getDocs`, acepta filtros como `[["ownerId", "==", uid]]` y expone `getAll`, `add`, `update` y `remove`.
-
-`useRealTimeCollection` escucha una ruta de Realtime Database con `onValue`, así que la lista se actualiza sola cuando cambia en el servidor. Expone `add`, `update` y `remove`.
-
-`useDexie` usa `useLiveQuery` para que la lista de frutas se refresque automáticamente cuando cambia la base local.
-
-`useNetwork` consulta `Network.getStatus()` y escucha `networkStatusChange`. `NetworkContext` comparte ese estado con todas las páginas para no crear un listener por pantalla.
-
-## Configuración de Firebase
-
-El proyecto usa el proyecto `dessarrollosft`.
-
-1. Authentication con correo y contraseña habilitado.
-2. Firestore Database creado en modo nativo.
-3. Realtime Database creado. La URL está en `src/firebase/config.ts`:
-
-```text
-https://dessarrollosft-default-rtdb.firebaseio.com
-```
-
-4. Las reglas quedaron en modo de prueba para desarrollar. Antes de la entrega hay que cambiarlas para que solo los usuarios autenticados puedan leer y escribir sus propios datos.
-
-En `src/firebase/config.ts` también se fuerza el sondeo largo de Firestore:
-
-```ts
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-});
-```
-
-Eso evita que la app se quede en modo offline en redes donde el canal WebChannel está bloqueado.
-
-La API key es pública, como corresponde a una app web de Firebase. Para un proyecto real conviene moverla a variables de entorno.
+Los plugins se registraron con `npx cap sync android`. Esa sincronización también copia la carpeta `dist` dentro de `android/app/src/main/assets/public`.
 
 ## Cómo correrlo
 
@@ -163,7 +107,7 @@ Requisitos: Node 20 o superior y npm.
 ```bash
 git clone https://github.com/Lucu1232004/Challenge2SD.git
 cd Challenge2SD
-git checkout challenge-06
+git checkout challenge-07
 npm install
 npm run dev
 ```
@@ -174,24 +118,41 @@ Para compilar:
 
 ```bash
 npm run build
-```
-
-Para probar en Android:
-
-```bash
 npx cap sync android
 npx cap open android
 ```
 
 Eso abre el proyecto en Android Studio. Desde ahí se compila y se instala en un emulador o en un teléfono con depuración USB activada.
 
+## Prueba en el teléfono
+
+Los sensores se prueban mejor en un dispositivo físico:
+
+1. Activar opciones de desarrollador y depuración USB en el teléfono.
+2. Conectar el teléfono por USB y aceptar la huella de la computadora.
+3. Ejecutar `npx cap sync android` y abrir Android Studio con `npx cap open android`.
+4. Elegir el teléfono como dispositivo y pulsar Run.
+5. Aceptar los permisos de cámara, ubicación y notificaciones cuando la app los pida.
+
+En el navegador funcionan la información del dispositivo, los archivos, las notificaciones locales y parte de los hápticos. Cámara, GPS, acelerómetro y vibración real necesitan el teléfono.
+
+## Notificaciones push
+
+Para que el registro push funcione en Android hace falta:
+
+1. Registrar una app Android en el proyecto Firebase con el mismo `applicationId` del proyecto (`io.ionic.starter`).
+2. Descargar `google-services.json`.
+3. Copiarlo en `android/app/`.
+4. Volver a ejecutar `npx cap sync android` y compilar.
+
+Sin ese archivo, el plugin puede registrarse en el código pero Firebase Cloud Messaging no entrega el token. En el navegador las notificaciones push no están disponibles con este plugin.
+
 ## Notas
 
-- No hay cuentas de prueba hardcodeadas. Crea una desde la pantalla de registro.
 - El `appId` de Android se mantiene como `io.ionic.starter`. Todas las ramas Ionic comparten ese paquete, así que instalar una reemplaza a la otra en el teléfono. El código de cada rama queda intacto en Git.
-- El nombre visible de la app es "Mi Espacio" y el nombre interno del paquete es `mi-espacio`.
-- La sección de frutas funciona sin internet porque Dexie guarda los datos en el dispositivo.
+- El nombre visible de la app es "Sensores" y el nombre interno del paquete es `sensores`.
+- La app no tiene login ni base de datos. El objetivo del challenge es probar las APIs nativas.
 
 ## Rama
 
-Esta entrega vive en la rama `challenge-06` del repositorio.
+Esta entrega vive en la rama `challenge-07` del repositorio.
