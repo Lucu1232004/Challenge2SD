@@ -1,13 +1,14 @@
 import { IonItem, IonCheckbox, IonLabel, IonButton, IonIcon, IonBadge } from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
-import { Task } from '../data/tasks';
+import type { Task } from '../data/tasks';
+import { formatDate } from '../lib/format';
 import './TaskItem.css';
 
 interface TaskItemProps {
   task: Task;
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
-  onOpen: (id: number) => void;
+  onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
+  onOpen: (id: string) => void;
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, onOpen }) => {
@@ -24,8 +25,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, onOpen })
       />
       <IonLabel>
         <h3 className="task-title">{task.title}</h3>
-        <p className="task-description">{task.description}</p>
-        <p className="task-date">Creada: {task.createdAt}</p>
+        <p className="task-description">{task.description || 'Sin descripción'}</p>
+        <p className="task-date">Creada: {formatDate(task.createdAt)}</p>
       </IonLabel>
       {task.completed && (
         <IonBadge slot="end" color="success">
@@ -36,6 +37,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete, onOpen })
         slot="end"
         fill="clear"
         color="danger"
+        aria-label="Eliminar tarea"
         onClick={(event) => {
           event.stopPropagation();
           onDelete(task.id);

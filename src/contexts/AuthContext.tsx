@@ -1,23 +1,44 @@
-// Contexto de autenticación: comparte el estado del usuario y las funciones
-// de login, registro y logout con todas las páginas de la app.
+// Contexto de autenticación: comparte el usuario, la sesión y el perfil
+// con todas las páginas de la app.
 import { createContext, useContext, ReactNode } from 'react';
-import { User } from 'firebase/auth';
-import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
+import type { Session, User } from '@supabase/supabase-js';
+import { useSupabaseAuth } from '../hooks/useSupabaseAuth';
+import { useProfile } from '../hooks/useProfile';
+import type { Profile } from '../hooks/useProfile';
 
 interface AuthContextValue {
   user: User | null;
+  session: Session | null;
+  profile: Profile | null;
   loading: boolean;
+  profileLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<{ needsConfirmation: boolean }>;
   logout: () => Promise<void>;
+  updateAvatar: (file: Blob) => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const auth = useFirebaseAuth();
+  const { user, session, loading, login, register, logout } = useSupabaseAuth();
+  const { profile, loading: profileLoading, updateAvatar, refreshProfile } = useProfile(user);
 
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+  const value: AuthContextValue = {
+    user,
+    session,
+    profile,
+    loading,
+    profileLoading,
+    login,
+    register,
+    logout,
+    updateAvatar,
+    refreshProfile,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // Hook para consumir el contexto desde cualquier componente

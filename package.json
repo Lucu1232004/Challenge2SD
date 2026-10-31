@@ -14,13 +14,14 @@
   "dependencies": {
     "@capacitor/android": "8.5.0",
     "@capacitor/app": "8.1.1",
+    "@capacitor/camera": "^8.2.6",
     "@capacitor/core": "8.5.0",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.5",
     "@capacitor/status-bar": "8.0.3",
     "@ionic/react": "^9.0.0",
     "@ionic/react-router": "^9.0.0",
-    "firebase": "^12.19.0",
+    "@supabase/supabase-js": "^2.118.0",
     "ionicons": "^8.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -50,5 +51,5 @@
     "vite": "^8.0.0",
     "vitest": "^4.0.0"
   },
-  "description": "Gestor de tareas con Firebase para el Challenge 05"
+  "description": "Gestor de tareas con Supabase para el Challenge 08"
 }

@@ -1,4 +1,4 @@
-// Página de inicio de sesión: valida el correo y la contraseña contra Firebase.
+﻿// PÃ¡gina de inicio de sesiÃ³n: valida el correo y la contraseÃ±a contra Supabase.
 import { useState } from 'react';
 import {
   IonPage,
@@ -15,7 +15,7 @@ import {
 } from '@ionic/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getFirebaseErrorMessage } from '../firebase/errors';
+import { getAuthErrorMessage } from '../lib/errors';
 import './Auth.css';
 
 const Login: React.FC = () => {
@@ -34,7 +34,8 @@ const Login: React.FC = () => {
       await login(email.trim(), password.trim());
       navigate('/tasks', { replace: true });
     } catch (err) {
-      setError(getFirebaseErrorMessage(err));
+      console.error('Error al iniciar sesión:', err);
+      setError(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -44,7 +45,7 @@ const Login: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Iniciar sesión</IonTitle>
+          <IonTitle>Iniciar sesiÃ³n</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -54,22 +55,24 @@ const Login: React.FC = () => {
           <p className="auth-subtitle">Ingresa con tu correo para ver tus tareas.</p>
 
           <IonItem>
-            <IonLabel position="stacked">Correo electrónico</IonLabel>
+            <IonLabel position="stacked">Correo electrÃ³nico</IonLabel>
             <IonInput
               type="email"
               value={email}
               placeholder="tucorreo@ejemplo.com"
-              onIonChange={(e) => setEmail(e.detail.value || '')}
+              autocomplete="email"
+              onIonInput={(e) => setEmail(e.detail.value || '')}
             />
           </IonItem>
 
           <IonItem>
-            <IonLabel position="stacked">Contraseña</IonLabel>
+            <IonLabel position="stacked">ContraseÃ±a</IonLabel>
             <IonInput
               type="password"
               value={password}
-              placeholder="Tu contraseña"
-              onIonChange={(e) => setPassword(e.detail.value || '')}
+              placeholder="Tu contraseÃ±a"
+              autocomplete="current-password"
+              onIonInput={(e) => setPassword(e.detail.value || '')}
             />
           </IonItem>
 
@@ -83,18 +86,18 @@ const Login: React.FC = () => {
             expand="block"
             className="ion-margin-top"
             onClick={handleSubmit}
-            disabled={!email.trim() || !password.trim()}
+            disabled={!email.trim() || !password.trim() || loading}
           >
             Entrar
           </IonButton>
 
           <p className="auth-switch">
-            ¿No tienes cuenta?{' '}
-            <a onClick={() => navigate('/register')}>Regístrate aquí</a>
+            Â¿No tienes cuenta?{' '}
+            <a onClick={() => navigate('/register')}>RegÃ­strate aquÃ­</a>
           </p>
         </div>
 
-        <IonLoading isOpen={loading} message="Iniciando sesión..." />
+        <IonLoading isOpen={loading} message="Iniciando sesiÃ³n..." />
       </IonContent>
     </IonPage>
   );

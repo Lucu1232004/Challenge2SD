@@ -12,18 +12,43 @@ import {
   IonBadge,
   IonBackButton,
   IonButtons,
+  IonSpinner,
 } from '@ionic/react';
 import { createOutline, checkmarkCircleOutline, timeOutline } from 'ionicons/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTasks } from '../contexts/TasksContext';
+import { formatDate } from '../lib/format';
 import './TaskDetail.css';
 
 const TaskDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { getTaskById } = useTasks();
+  const { getTaskById, loading } = useTasks();
   const navigate = useNavigate();
 
-  const task = getTaskById(Number(id));
+  const task = id ? getTaskById(id) : undefined;
+
+  if (loading && !task) {
+    return (
+      <IonPage>
+        <IonHeader>
+          <IonToolbar color="primary">
+            <IonButtons slot="start">
+              <IonBackButton defaultHref="/tasks" />
+            </IonButtons>
+            <IonTitle>Detalle</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <div className="empty-state">
+            <IonSpinner name="crescent" />
+            <IonText color="medium">
+              <p>Cargando la tarea...</p>
+            </IonText>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
+  }
 
   if (!task) {
     return (
@@ -81,7 +106,7 @@ const TaskDetail: React.FC = () => {
 
           <div className="detail-row">
             <span className="detail-label">Fecha de creación</span>
-            <p className="detail-value">{task.createdAt}</p>
+            <p className="detail-value">{formatDate(task.createdAt)}</p>
           </div>
 
           <IonButton

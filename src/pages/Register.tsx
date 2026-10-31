@@ -1,4 +1,4 @@
-// Página de registro: crea una cuenta nueva con correo y contraseña en Firebase.
+﻿// PÃ¡gina de registro: crea una cuenta nueva con correo y contraseÃ±a en Supabase.
 import { useState } from 'react';
 import {
   IonPage,
@@ -12,10 +12,11 @@ import {
   IonButton,
   IonText,
   IonLoading,
+  IonNote,
 } from '@ionic/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getFirebaseErrorMessage } from '../firebase/errors';
+import { getAuthErrorMessage } from '../lib/errors';
 import './Auth.css';
 
 const Register: React.FC = () => {
@@ -23,6 +24,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -30,16 +32,22 @@ const Register: React.FC = () => {
   const handleSubmit = async () => {
     if (!email.trim() || !password.trim()) return;
     if (password !== confirm) {
-      setError('Las contraseñas no coinciden.');
+      setError('Las contraseÃ±as no coinciden.');
       return;
     }
     setError('');
+    setNotice('');
     setLoading(true);
     try {
-      await register(email.trim(), password.trim());
-      navigate('/tasks', { replace: true });
+      const result = await register(email.trim(), password.trim());
+      if (result.needsConfirmation) {
+        setNotice('Te enviamos un correo para confirmar la cuenta. DespuÃ©s de confirmarla, inicia sesiÃ³n.');
+      } else {
+        navigate('/tasks', { replace: true });
+      }
     } catch (err) {
-      setError(getFirebaseErrorMessage(err));
+      console.error('Error al registrar la cuenta:', err);
+      setError(getAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -59,32 +67,35 @@ const Register: React.FC = () => {
           <p className="auth-subtitle">Crea tu cuenta para empezar a organizar tus tareas.</p>
 
           <IonItem>
-            <IonLabel position="stacked">Correo electrónico</IonLabel>
+            <IonLabel position="stacked">Correo electrÃ³nico</IonLabel>
             <IonInput
               type="email"
               value={email}
               placeholder="tucorreo@ejemplo.com"
-              onIonChange={(e) => setEmail(e.detail.value || '')}
+              autocomplete="email"
+              onIonInput={(e) => setEmail(e.detail.value || '')}
             />
           </IonItem>
 
           <IonItem>
-            <IonLabel position="stacked">Contraseña</IonLabel>
+            <IonLabel position="stacked">ContraseÃ±a</IonLabel>
             <IonInput
               type="password"
               value={password}
-              placeholder="Mínimo 6 caracteres"
-              onIonChange={(e) => setPassword(e.detail.value || '')}
+              placeholder="MÃ­nimo 6 caracteres"
+              autocomplete="new-password"
+              onIonInput={(e) => setPassword(e.detail.value || '')}
             />
           </IonItem>
 
           <IonItem>
-            <IonLabel position="stacked">Confirmar contraseña</IonLabel>
+            <IonLabel position="stacked">Confirmar contraseÃ±a</IonLabel>
             <IonInput
               type="password"
               value={confirm}
-              placeholder="Repite tu contraseña"
-              onIonChange={(e) => setConfirm(e.detail.value || '')}
+              placeholder="Repite tu contraseÃ±a"
+              autocomplete="new-password"
+              onIonInput={(e) => setConfirm(e.detail.value || '')}
             />
           </IonItem>
 
@@ -94,18 +105,34 @@ const Register: React.FC = () => {
             </IonText>
           )}
 
+          {notice && (
+            <IonText color="success">
+              <p className="auth-error">{notice}</p>
+            </IonText>
+          )}
+
           <IonButton
             expand="block"
             className="ion-margin-top"
             onClick={handleSubmit}
-            disabled={!email.trim() || !password.trim() || !confirm.trim()}
+            disabled={!email.trim() || !password.trim() || !confirm.trim() || loading}
           >
             Crear cuenta
           </IonButton>
 
+          {notice && (
+            <IonButton expand="block" fill="outline" onClick={() => navigate('/login')}>
+              Ir a iniciar sesiÃ³n
+            </IonButton>
+          )}
+
+          <IonNote className="ion-margin-top auth-note">
+            La contraseÃ±a la administra Supabase Auth. No se guarda en la app.
+          </IonNote>
+
           <p className="auth-switch">
-            ¿Ya tienes cuenta?{' '}
-            <a onClick={() => navigate('/login')}>Inicia sesión aquí</a>
+            Â¿Ya tienes cuenta?{' '}
+            <a onClick={() => navigate('/login')}>Inicia sesiÃ³n aquÃ­</a>
           </p>
         </div>
 

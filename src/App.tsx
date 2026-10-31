@@ -1,5 +1,5 @@
 // Router principal: define las páginas de la app y protege las rutas
-// que solo pueden verse con sesión iniciada.
+// que solo pueden verse con sesión iniciada en Supabase.
 import { ReactNode } from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, IonLoading, IonPage, IonContent, setupIonicReact } from '@ionic/react';
@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Tasks from './pages/Tasks';
 import TaskFormPage from './pages/TaskFormPage';
 import TaskDetail from './pages/TaskDetail';
+import Profile from './pages/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,7 +37,7 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-// Pantalla que se muestra mientras Firebase restaura la sesión
+// Pantalla que se muestra mientras Supabase restaura la sesión
 const LoadingScreen: React.FC = () => (
   <IonPage>
     <IonContent className="ion-padding">
@@ -99,6 +100,14 @@ const App: React.FC = () => (
               element={
                 <ProtectedRoute>
                   <TaskDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

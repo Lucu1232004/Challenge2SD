@@ -1,5 +1,5 @@
 // Página principal: lista las tareas del usuario con sus estadísticas.
-// Los datos vienen del TasksContext y la sesión del AuthContext.
+// Los datos vienen de Supabase y se actualizan en vivo con Realtime.
 import { useState } from 'react';
 import {
   IonPage,
@@ -14,44 +14,59 @@ import {
   IonAlert,
   IonFab,
   IonFabButton,
+  IonButtons,
   IonButton,
+  IonAvatar,
+  IonImg,
+  IonSpinner,
 } from '@ionic/react';
 import {
   listOutline,
   checkmarkCircleOutline,
   timeOutline,
   addOutline,
-  logOutOutline,
 } from 'ionicons/icons';
 import { useNavigate } from 'react-router-dom';
 import TaskItem from '../components/TaskItem';
 import { useTasks } from '../contexts/TasksContext';
 import { useAuth } from '../contexts/AuthContext';
+import { getDataErrorMessage } from '../lib/errors';
 import './Tasks.css';
 
 const Tasks: React.FC = () => {
-  const { tasks, toggleTask, deleteTask } = useTasks();
-  const { logout } = useAuth();
+  const { tasks, toggleTask, deleteTask, loading, error, realtime } = useTasks();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+  const [actionError, setActionError] = useState('');
 
-  const handleDeleteClick = (id: number) => {
+  const initials = (profile?.email || user?.email || '?').slice(0, 2).toUpperCase();
+
+  const handleDeleteClick = (id: string) => {
     setTaskToDelete(id);
     setShowAlert(true);
   };
 
-  const confirmDelete = () => {
-    if (taskToDelete !== null) {
-      deleteTask(taskToDelete);
+  const confirmDelete = async () => {
+    if (taskToDelete) {
+      try {
+        await deleteTask(taskToDelete);
+      } catch (err) {
+        setActionError(getDataErrorMessage(err));
+      }
       setTaskToDelete(null);
     }
     setShowAlert(false);
   };
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login', { replace: true });
+  const handleToggle = async (id: string) => {
+    setActionError('');
+    try {
+      await toggleTask(id);
+    } catch (err) {
+      setActionError(getDataErrorMessage(err));
+    }
   };
 
   const completedCount = tasks.filter((t) => t.completed).length;
@@ -61,15 +76,34 @@ const Tasks: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Mi Gestor de Tareas</IonTitle>
-          <IonButton slot="end" fill="clear" color="light" onClick={handleLogout}>
-            <IonIcon slot="start" icon={logOutOutline} />
-            Salir
-          </IonButton>
+          <IonTitle>Mis tareas</IonTitle>
+          <IonButtons slot="end">
+            <IonButton
+              fill="clear"
+              color="light"
+              onClick={() => navigate('/profile')}
+              aria-label="Abrir perfil"
+            >
+              <IonAvatar className="toolbar-avatar">
+                {profile?.avatar_url ? (
+                  <IonImg src={profile.avatar_url} alt="Foto de perfil" />
+                ) : (
+                  <span>{initials}</span>
+                )}
+              </IonAvatar>
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
       <IonContent>
+        <div className="sync-status">
+          <IonBadge color={realtime ? 'success' : 'medium'}>
+            {realtime ? 'En vivo' : 'Conectando'}
+          </IonBadge>
+          <span>Supabase mantiene la lista sincronizada.</span>
+        </div>
+
         {/* Estadísticas */}
         <div className="stats-container">
           <div className="stat-box">
@@ -89,8 +123,21 @@ const Tasks: React.FC = () => {
           </div>
         </div>
 
+        {(error || actionError) && (
+          <IonText color="danger">
+            <p className="list-error">{error || actionError}</p>
+          </IonText>
+        )}
+
         {/* Lista de tareas */}
-        {tasks.length === 0 ? (
+        {loading ? (
+          <div className="empty-state">
+            <IonSpinner name="crescent" />
+            <IonText color="medium">
+              <p>Cargando tareas...</p>
+            </IonText>
+          </div>
+        ) : tasks.length === 0 ? (
           <div className="empty-state">
             <IonIcon icon={listOutline} size="large" color="medium" />
             <IonText color="medium">
@@ -104,7 +151,7 @@ const Tasks: React.FC = () => {
               <TaskItem
                 key={task.id}
                 task={task}
-                onToggle={toggleTask}
+                onToggle={handleToggle}
                 onDelete={handleDeleteClick}
                 onOpen={(id) => navigate(`/tasks/${id}`)}
               />
