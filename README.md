@@ -1,27 +1,26 @@
-# Challenge 05 - Gestor de Tareas con Firebase
+# Challenge 08 - Gestor de Tareas con Supabase
 
-App móvil hecha con Ionic y React que toma el gestor de tareas del Challenge 03 y le agrega autenticación real con Firebase, contextos y rutas protegidas.
+App móvil hecha con Ionic y React que evoluciona el gestor de tareas del Challenge 05. Cambia Firebase por Supabase y agrega persistencia real, lista en vivo, perfiles con avatar y políticas RLS.
 
-## Qué hace
+## Qué incluye
 
-- Registro con correo y contraseña.
-- Inicio y cierre de sesión contra Firebase Authentication.
-- Sesión persistente: si el usuario ya entró, la app lo recuerda al abrirla.
-- Lista de tareas con estadísticas de total, pendientes y completadas.
-- Crear, editar, ver el detalle, completar y eliminar tareas.
-- Rutas privadas: sin sesión no se puede entrar a las tareas.
-
-Las tareas viven en memoria durante la sesión. Al recargar la página vuelven las tareas de ejemplo. La persistencia en base de datos llega en el Challenge 06.
+- Registro, inicio y cierre de sesión con Supabase Auth.
+- Sesión persistente: al abrir la app se restaura el usuario.
+- Rutas protegidas: sin sesión no se entra a las tareas.
+- CRUD completo de tareas en la tabla `tasks`.
+- Lista sincronizada en vivo con Supabase Realtime.
+- Perfil con avatar guardado en el bucket `avatars`.
+- Captura de foto con `@capacitor/camera` y opción de subir un archivo.
+- RLS: cada usuario solo ve y modifica sus propias tareas y su perfil.
+- Componentes Ionic: `IonPage`, `IonList`, `IonItem`, `IonInput`, `IonTextarea`, `IonButton`, `IonFab`, `IonAlert`, `IonAvatar`, `IonBadge`, entre otros.
 
 ## Requisitos del challenge
 
-El enunciado de la clase 05 pide:
+La clase 09 pide:
 
-- Login, registro y logout con Firebase.
-- Rutas para login, registro, lista de tareas, agregar o editar y detalle.
-- Un contexto para manejar los datos de las tareas entre páginas.
-- Otro contexto para manejar el estado de autenticación.
-- Custom hooks para encapsular la lógica de Firebase.
+1. Crear el proyecto, la tabla de tareas con RLS y el bucket de avatares.
+2. Registro, login, CRUD y lista en vivo.
+3. Usar componentes Ionic y captura de foto con la cámara.
 
 Todo eso está implementado en esta rama.
 
@@ -29,8 +28,8 @@ Todo eso está implementado en esta rama.
 
 - Ionic 9 con React 19 y TypeScript.
 - Vite 8 para desarrollo y compilación.
-- Capacitor 8 para empaquetar la app en Android.
-- Firebase 12, solo Authentication.
+- Capacitor 8 para empaquetar en Android.
+- Supabase para Auth, Postgres, Realtime y Storage.
 - React Router 6 para las rutas.
 - Ionicons para los iconos.
 
@@ -39,65 +38,56 @@ Todo eso está implementado en esta rama.
 ```text
 src/
   components/
-    TaskItem.tsx          Tarjeta de una tarea con checkbox y botón eliminar
+    TaskItem.tsx          Tarjeta de una tarea
   contexts/
-    AuthContext.tsx       Expone usuario, carga y acciones de autenticación
-    TasksContext.tsx      Comparte la lista de tareas entre páginas
-  data/
-    tasks.ts              Tipo Task y tareas de ejemplo
-  firebase/
-    config.ts             Inicialización de Firebase y exportación de auth
-    errors.ts             Traducción de errores de Firebase al español
+    AuthContext.tsx       Usuario, sesión, perfil y acciones de auth
+    TasksContext.tsx      CRUD y suscripción Realtime a tasks
   hooks/
-    useFirebaseAuth.ts    Login, registro, logout y restauración de sesión
+    useSupabaseAuth.ts    Login, registro, logout y restauración de sesión
+    useProfile.ts         Perfil, avatar y subida al bucket
+  lib/
+    supabase.ts           Cliente único de Supabase
+    camera.ts             Captura de foto con Capacitor
+    errors.ts             Errores de Supabase traducidos al español
+    format.ts             Formato de fechas
   pages/
-    Login.tsx             Formulario de inicio de sesión
-    Register.tsx          Formulario de registro
-    Tasks.tsx             Lista, estadísticas y logout
+    Login.tsx             Inicio de sesión
+    Register.tsx          Registro
+    Tasks.tsx             Lista, estadísticas y estado de Realtime
     TaskFormPage.tsx      Crear o editar una tarea
     TaskDetail.tsx        Detalle de una tarea
+    Profile.tsx           Perfil, avatar y logout
   App.tsx                 Rutas, providers y protección de sesión
-  main.tsx                Punto de entrada de React
+supabase/
+  schema.sql              Tablas, RLS, Realtime y bucket de avatares
 ```
 
-## Rutas
+## Base de datos
 
-| Ruta | Acceso | Pantalla |
-|------|--------|----------|
-| `/` | Público | Redirige a `/tasks` o `/login` según la sesión |
-| `/login` | Público | Inicio de sesión |
-| `/register` | Público | Registro |
-| `/tasks` | Privado | Lista de tareas |
-| `/tasks/new` | Privado | Crear tarea |
-| `/tasks/edit/:id` | Privado | Editar tarea |
-| `/tasks/:id` | Privado | Detalle de la tarea |
+El archivo `supabase/schema.sql` crea:
 
-`ProtectedRoute` revisa el estado de `AuthContext`. Mientras Firebase restaura la sesión muestra un loader. Si no hay usuario, redirige a `/login`.
+- `tasks`: tareas con `user_id`, título, descripción, estado y fecha.
+- `profiles`: correo y URL del avatar de cada usuario.
+- Trigger `handle_new_user` para crear el perfil al registrarse.
+- Políticas RLS para que cada usuario solo acceda a sus datos.
+- Publicación de `tasks` en `supabase_realtime`.
+- Bucket público `avatars` con políticas para subir, reemplazar y borrar solo la foto propia.
 
-## Autenticación
+## Configuración de Supabase
 
-`useFirebaseAuth` es el hook que habla con Firebase. Se suscribe a `onAuthStateChanged` para mantener el usuario actualizado y expone tres acciones: `login`, `register` y `logout`. `AuthContext` envuelve ese hook y lo comparte con toda la app mediante `useAuth`.
-
-Los errores de Firebase se traducen en `src/firebase/errors.ts` para que el usuario vea mensajes claros en vez de códigos técnicos.
-
-## Configuración de Firebase
-
-1. Crear un proyecto en la consola de Firebase.
-2. Habilitar el proveedor de correo y contraseña en Authentication.
-3. Registrar una app web y copiar el objeto de configuración.
-4. Pegar esos valores en `src/firebase/config.ts`.
-5. Crear usuarios desde la pantalla de registro de la app o desde la consola.
-
-La configuración actual apunta al proyecto `dessarrollosft`. La API key es pública, como corresponde a una app web de Firebase. Para un proyecto real conviene moverla a variables de entorno.
-
-## Cómo correrlo
-
-Requisitos: Node 20 o superior y npm.
+1. Crear un proyecto en supabase.com.
+2. Abrir el SQL Editor y ejecutar completo `supabase/schema.sql`.
+3. En Authentication, Sign In / Providers, habilitar Email. Para desarrollo se puede desactivar "Confirm email".
+4. Crear `.env.local` en la raíz con:
 
 ```bash
-git clone https://github.com/Lucu1232004/Challenge2SD.git
-cd Challenge2SD
-git checkout challenge-05
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxx
+```
+
+5. Instalar y correr:
+
+```bash
 npm install
 npm run dev
 ```
@@ -110,21 +100,32 @@ Para compilar:
 npm run build
 ```
 
-Para probar en Android:
+Para Android:
 
 ```bash
 npx cap sync android
 npx cap open android
 ```
 
-Eso abre el proyecto en Android Studio. Desde ahí se compila y se instala en un emulador o en un teléfono con depuración USB activada.
+No uses la `service_role` ni la secret key en el frontend. La publishable key es la única que debe ir en `.env.local`.
+
+## Deploy
+
+El archivo `public/_redirects` ya tiene la regla para que las rutas internas funcionen en Netlify:
+
+```text
+/* /index.html 200
+```
+
+Después de `npm run build`, se publica la carpeta `dist`.
 
 ## Notas
 
-- No hay cuentas de prueba hardcodeadas. Crea una desde la pantalla de registro.
-- El `appId` de Android se mantiene como `io.ionic.starter` para no romper el proyecto existente.
-- El nombre visible de la app es "Gestor de Tareas" y el nombre interno del paquete es `gestor-tareas`.
+- El `appId` de Android se mantiene como `io.ionic.starter`.
+- Las tareas y los perfiles viven en Supabase, no en memoria.
+- Las cuentas de prueba se eliminan desde Authentication, Users.
+- La app usa la cámara en Android y el selector de archivos en el navegador.
 
 ## Rama
 
-Esta entrega vive en la rama `challenge-05` del repositorio.
+Esta entrega vive en la rama `challenge-08` del repositorio.
