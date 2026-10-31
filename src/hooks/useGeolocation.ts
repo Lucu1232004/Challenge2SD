@@ -8,15 +8,36 @@ export function useGeolocation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const getCurrentPosition = async () => {
-    setLoading(true);
-    setError('');
+  // En Android hay que pedir el permiso con el plugin. En web
+  // requestPermissions no está implementado y el navegador lo pide solo.
+  const ensurePermission = async (): Promise<boolean> => {
     try {
       const permissions = await Geolocation.requestPermissions();
       if (permissions.location !== 'granted') {
         setError('No diste permiso para usar la ubicación.');
-        return;
+        return false;
       }
+      return true;
+    } catch (err) {
+      const message = err instanceof Error ? err.message.toLowerCase() : '';
+      if (
+        message.includes('not implemented') ||
+        message.includes('not available') ||
+        message.includes('not supported')
+      ) {
+        return true;
+      }
+      setError(err instanceof Error ? err.message : 'No se pudo pedir el permiso de ubicación.');
+      return false;
+    }
+  };
+
+  const getCurrentPosition = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const granted = await ensurePermission();
+      if (!granted) return;
       const current = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
       setPosition(current);
     } catch (err) {
@@ -30,11 +51,8 @@ export function useGeolocation() {
     if (watchId) return;
     setError('');
     try {
-      const permissions = await Geolocation.requestPermissions();
-      if (permissions.location !== 'granted') {
-        setError('No diste permiso para usar la ubicación.');
-        return;
-      }
+      const granted = await ensurePermission();
+      if (!granted) return;
       const id = await Geolocation.watchPosition(
         { enableHighAccuracy: true },
         (current, err) => {

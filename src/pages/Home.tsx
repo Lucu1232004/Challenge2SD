@@ -15,16 +15,40 @@ import {
   chevronForwardOutline,
   cloudUploadOutline,
   folderOpenOutline,
+  imageOutline,
   locationOutline,
+  mapOutline,
   notificationsOutline,
   phonePortraitOutline,
   pulseOutline,
   speedometerOutline,
+  timeOutline,
 } from 'ionicons/icons';
 import SensorHeader from '../components/SensorHeader';
 import './Sensors.css';
 
 const sensors = [
+  {
+    title: 'Mapa y rastreo',
+    description: 'Mapa, seguimiento GPS y sitios cercanos.',
+    icon: mapOutline,
+    path: '/map',
+    color: 'primary',
+  },
+  {
+    title: 'Foto con ubicación',
+    description: 'Toma una foto con dirección y coordenadas.',
+    icon: imageOutline,
+    path: '/map/photo',
+    color: 'secondary',
+  },
+  {
+    title: 'Historial de rastreos',
+    description: 'Consulta los recorridos guardados en JSON.',
+    icon: timeOutline,
+    path: '/map/history',
+    color: 'tertiary',
+  },
   {
     title: 'Geolocalización',
     description: 'Obtén tu posición y sigue tus movimientos.',
@@ -91,8 +115,8 @@ const Home: React.FC = () => {
       <SensorHeader title="Sensores" back={false} />
       <IonContent className="ion-padding">
         <div className="home-hero">
-          <h1>Challenge 07</h1>
-          <p>Explora los sensores y funciones nativas del dispositivo.</p>
+          <h1>Challenge 09</h1>
+          <p>Mapas, rastreo GPS y sensores del dispositivo.</p>
         </div>
 
         <IonGrid className="sensor-grid">

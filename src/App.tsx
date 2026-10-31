@@ -1,8 +1,11 @@
-// Router principal de la app de sensores.
+// Router principal de la app de mapas y sensores.
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Navigate, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import MapPage from './pages/MapPage';
+import TrackHistoryPage from './pages/TrackHistoryPage';
+import LocationPhotoPage from './pages/LocationPhotoPage';
 import GeolocationPage from './pages/GeolocationPage';
 import CameraPage from './pages/CameraPage';
 import MotionPage from './pages/MotionPage';
@@ -41,6 +44,9 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/home" element={<Home />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/map/history" element={<TrackHistoryPage />} />
+        <Route path="/map/photo" element={<LocationPhotoPage />} />
         <Route path="/sensors/geolocation" element={<GeolocationPage />} />
         <Route path="/sensors/camera" element={<CameraPage />} />
         <Route path="/sensors/motion" element={<MotionPage />} />
