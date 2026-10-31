@@ -1,81 +1,84 @@
-# Challenge 07 - Sensores
+# Challenge 09 - Mapas, rastreo y sensores
 
-App móvil en Ionic y React con una pantalla principal y una página por cada sensor o función nativa del dispositivo. Usa los plugins de Capacitor para cámara, ubicación, movimiento, información del dispositivo, hápticos, archivos y notificaciones.
+App móvil hecha con Ionic y React que evoluciona la app de Sensores del Challenge 07. Agrega un mapa con Leaflet, rastreo GPS, historial en JSON, foto con ubicación y sitios cercanos usando OpenStreetMap.
 
-## Qué hace
+## Qué incluye
 
-- Home con ocho tarjetas, una por sensor.
-- Geolocalización: posición actual y seguimiento continuo.
-- Cámara: tomar una foto o elegir una de la galería.
-- Movimiento: acelerómetro y orientación.
-- Dispositivo: modelo, sistema operativo, batería e identificador.
-- Hápticos: impactos, notificaciones táctiles y vibración.
-- Archivos: guardar, leer y eliminar un archivo de texto.
-- Notificaciones locales: permiso, programación y lista de pendientes.
-- Notificaciones push: registro del dispositivo y token de Firebase Cloud Messaging.
+- Mapa interactivo con Leaflet y mosaicos de OpenStreetMap.
+- Ubicación actual con precisión y dirección aproximada.
+- Rastreo con `watchPosition`: puntos, distancia y duración.
+- Guardado de cada recorrido en `Documents/rastreos.json`.
+- Historial para ver un rastreo en el mapa o eliminarlo.
+- Foto con marca de agua: dirección, coordenadas y fecha.
+- Sitios cercanos: restaurantes, cafés, farmacias y supermercados.
+- Indicadores de red, batería y movimiento.
+- Vibración al iniciar el rastreo.
+- Avisos de batería baja, sin movimiento y sin conexión.
+- Se reutilizan las páginas de sensores del Challenge 07.
 
 ## Requisitos del challenge
 
-El enunciado de la clase 07 pide:
+La clase 10 pide completar la app de mapas usando diferentes sensores. Los ejemplos eran:
 
-1. Crear una app vacía en Ionic.
-2. Usar una Home con un botón por sensor.
-3. Crear una página nueva por cada sensor y aplicar la API correspondiente.
+- a. Usar la red para obtener la dirección y mostrar el mapa.
+- b. Detectar movimiento para iniciar o detener el rastreo.
+- c. Guardar el rastreo en JSON y crear una página de historial.
+- d. Tomar una foto y ponerle la ubicación como marca de agua.
+- e. Vibrar al iniciar el rastreo.
+- f. Detener el rastreo cuando la batería esté baja.
+- g. Notificaciones inteligentes.
+- h. Mostrar sitios cercanos.
 
-Todo eso está implementado en esta rama.
+En esta rama están implementados a, b (inicio automático), c, d, e, f, g y h.
 
 ## Tecnologías
 
 - Ionic 9 con React 19 y TypeScript.
 - Vite 8 para desarrollo y compilación.
-- Capacitor 8 para empaquetar en Android.
-- Plugins de Capacitor:
-  - `@capacitor/geolocation`
-  - `@capacitor/camera`
-  - `@capacitor/motion`
-  - `@capacitor/device`
-  - `@capacitor/haptics`
-  - `@capacitor/filesystem`
-  - `@capacitor/local-notifications`
-  - `@capacitor/push-notifications`
-- Ionicons para los iconos.
+- Capacitor 8 para Android.
+- Leaflet 1.9 y react-leaflet 5 para el mapa.
+- Axios para las consultas a OpenStreetMap.
+- Nominatim para direcciones y sitios cercanos. No necesita API key.
+- Plugins de Capacitor: geolocation, camera, device, filesystem, haptics, motion, network y local-notifications.
 
 ## Estructura
 
 ```text
 src/
   components/
-    SensorHeader.tsx      Header con botón de volver
-    SensorPage.tsx        Envoltorio común de las páginas
+    MapView.tsx           Mapa, marcador, precisión y recorrido
   hooks/
-    useGeolocation.ts     Posición y seguimiento
-    useCamera.ts          Foto o galería
-    useAccelerometer.ts   Acelerómetro y orientación
-    useDevice.ts          Información del dispositivo y batería
-    useHaptics.ts         Impactos, notificaciones y vibración
-    useFilesystem.ts      Guardar, leer y borrar archivos
-    useLocalNotifications.ts  Permisos y programación
-    usePushNotifications.ts   Registro y token de push
+    useGeolocation.ts     Posición y seguimiento GPS
+    useTrackStore.ts      Lectura y escritura de rastreos.json
+    useNetwork.ts         Estado de la conexión
+    useCamera.ts          Cámara o galería
+    useAccelerometer.ts   Movimiento del dispositivo
+    useDevice.ts          Batería e información del equipo
+    useHaptics.ts         Vibraciones
+    useLocalNotifications.ts
+  lib/
+    geo.ts                Haversine, distancias y duraciones
+    geocoding.ts          Nominatim: direcciones y sitios cercanos
+    notifications.ts      Avisos locales
   pages/
-    Home.tsx              Tarjetas de sensores
-    GeolocationPage.tsx
-    CameraPage.tsx
-    MotionPage.tsx
-    DevicePage.tsx
-    HapticsPage.tsx
-    FilesystemPage.tsx
-    LocalNotificationsPage.tsx
-    PushNotificationsPage.tsx
-    Sensors.css          Estilos compartidos
-  App.tsx                 Rutas de la app
-  main.tsx                Punto de entrada
+    MapPage.tsx           Mapa, rastreo y sitios cercanos
+    TrackHistoryPage.tsx  Historial de recorridos
+    LocationPhotoPage.tsx Foto con marca de agua
+    Home.tsx              Tarjetas de mapas y sensores
+    ...                   Páginas de sensores del Challenge 07
+  types/
+    track.ts              Tipos Track y TrackPoint
 ```
 
 ## Rutas
 
 | Ruta | Pantalla |
 |------|----------|
-| `/home` | Inicio con las ocho tarjetas |
+| `/` | Redirige a `/home` |
+| `/home` | Inicio con mapas y sensores |
+| `/map` | Mapa, rastreo y sitios cercanos |
+| `/map/history` | Historial de rastreos |
+| `/map/photo` | Foto con ubicación |
 | `/sensors/geolocation` | Geolocalización |
 | `/sensors/camera` | Cámara |
 | `/sensors/motion` | Movimiento |
@@ -85,21 +88,6 @@ src/
 | `/sensors/notifications` | Notificaciones locales |
 | `/sensors/push` | Notificaciones push |
 
-La raíz `/` redirige a `/home`.
-
-## Permisos de Android
-
-El `AndroidManifest.xml` incluye:
-
-- Cámara.
-- Ubicación precisa y aproximada.
-- Vibración.
-- Notificaciones en Android 13 o superior.
-- Lectura de imágenes de la galería.
-- Lectura y escritura de almacenamiento para versiones antiguas de Android.
-
-Los plugins se registraron con `npx cap sync android`. Esa sincronización también copia la carpeta `dist` dentro de `android/app/src/main/assets/public`.
-
 ## Cómo correrlo
 
 Requisitos: Node 20 o superior y npm.
@@ -107,7 +95,7 @@ Requisitos: Node 20 o superior y npm.
 ```bash
 git clone https://github.com/Lucu1232004/Challenge2SD.git
 cd Challenge2SD
-git checkout challenge-07
+git checkout challenge-09
 npm install
 npm run dev
 ```
@@ -118,41 +106,40 @@ Para compilar:
 
 ```bash
 npm run build
+```
+
+Para Android:
+
+```bash
 npx cap sync android
 npx cap open android
 ```
 
-Eso abre el proyecto en Android Studio. Desde ahí se compila y se instala en un emulador o en un teléfono con depuración USB activada.
+## Datos y permisos
 
-## Prueba en el teléfono
+- Los rastreos se guardan en `Documents/rastreos.json` en Android y en el almacenamiento local del navegador en web.
+- Las fotos con marca de agua se guardan como JPEG en `Documents`.
+- La app pide permisos de ubicación, cámara y notificaciones.
+- En web, la cámara se reemplaza por el selector de archivos.
+- Nominatim permite una petición por segundo. La app espera entre consultas para respetar el límite.
 
-Los sensores se prueban mejor en un dispositivo físico:
+## Deploy
 
-1. Activar opciones de desarrollador y depuración USB en el teléfono.
-2. Conectar el teléfono por USB y aceptar la huella de la computadora.
-3. Ejecutar `npx cap sync android` y abrir Android Studio con `npx cap open android`.
-4. Elegir el teléfono como dispositivo y pulsar Run.
-5. Aceptar los permisos de cámara, ubicación y notificaciones cuando la app los pida.
+`public/_redirects` ya tiene la regla para Netlify:
 
-En el navegador funcionan la información del dispositivo, los archivos, las notificaciones locales y parte de los hápticos. Cámara, GPS, acelerómetro y vibración real necesitan el teléfono.
+```text
+/* /index.html 200
+```
 
-## Notificaciones push
-
-Para que el registro push funcione en Android hace falta:
-
-1. Registrar una app Android en el proyecto Firebase con el mismo `applicationId` del proyecto (`io.ionic.starter`).
-2. Descargar `google-services.json`.
-3. Copiarlo en `android/app/`.
-4. Volver a ejecutar `npx cap sync android` y compilar.
-
-Sin ese archivo, el plugin puede registrarse en el código pero Firebase Cloud Messaging no entrega el token. En el navegador las notificaciones push no están disponibles con este plugin.
+Después de `npm run build`, se publica la carpeta `dist`.
 
 ## Notas
 
-- El `appId` de Android se mantiene como `io.ionic.starter`. Todas las ramas Ionic comparten ese paquete, así que instalar una reemplaza a la otra en el teléfono. El código de cada rama queda intacto en Git.
-- El nombre visible de la app es "Sensores" y el nombre interno del paquete es `sensores`.
-- La app no tiene login ni base de datos. El objetivo del challenge es probar las APIs nativas.
+- No se necesita API key: se usa OpenStreetMap con Nominatim.
+- El `appId` de Android se mantiene como `io.ionic.starter`.
+- El nombre visible de la app es "Mapas y Sensores".
+- Los sitios cercanos se consultan en un radio de 500 metros.
 
 ## Rama
 
-Esta entrega vive en la rama `challenge-07` del repositorio.
+Esta entrega vive en la rama `challenge-09` del repositorio.
